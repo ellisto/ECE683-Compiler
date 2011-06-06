@@ -1,1 +1,1 @@
-#define MAX_USED_REGISTER 4
+#define MAX_USED_REGISTER 5

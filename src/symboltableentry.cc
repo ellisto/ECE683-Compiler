@@ -1,4 +1,6 @@
 #include "symboltableentry.h"
+#include "report_error.h"
+#include<sstream>
 
 symboltableentry::symboltableentry(token t){
   this->t = new token(t);
@@ -105,7 +107,9 @@ int symboltableentry::get_ardepth(){
 
 void symboltableentry::set_offset(int os){
   *offset = os;
-  cout << " offset for " << t->get_value() << " is " << os << endl;
+  stringstream ss;
+  ss << " offset for " << t->get_value() << " is " << os << endl;
+  debug(ss.str());
 }
 int symboltableentry::get_offset(){
   return *offset;

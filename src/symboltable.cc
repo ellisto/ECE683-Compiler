@@ -1,4 +1,6 @@
 #include "symboltable.h"
+#include "report_error.h"
+#include <sstream>
 
 symboltable::symboltable(){
   table = unordered_set<symboltableentry>();
@@ -188,13 +190,17 @@ void symboltable::set_function(token t, vector<pair<token*,int> > plist){
     void symboltable::set_label(token t,string lbl){
       symboltableentry entry = *find_entry(t);
       entry.set_label(lbl);
-      cout << "setting label for " << t << " to " << lbl <<endl;
+      stringstream ss;
+      ss << "setting label for " << t << " to " << lbl <<endl;
+      debug(ss.str());
     }
 
     string symboltable::get_label(token t){
       symboltableentry entry = *find_entry(t);
       string lbl = entry.get_label();
-      cout << "getting label for " << t << ":" << lbl <<endl;
+      stringstream ss;
+      ss << "getting label for " << t << ":" << lbl <<endl;
+      debug(ss.str());
       return lbl;
     }
 
@@ -205,24 +211,30 @@ void symboltable::set_function(token t, vector<pair<token*,int> > plist){
     void symboltable::increment_ardepth(token t){
       symboltableentry entry = *find_entry(t);
       entry.increment_ardepth();
-      cout << "incrementing ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
+      stringstream ss;
+      ss <<"incrementing ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
+      debug(ss.str());
     }
 
     void symboltable::set_ardepth(token t, int d){
       symboltableentry entry = *find_entry(t);
       entry.set_ardepth(d);
-      cout << "setting ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
+      stringstream ss;
+      ss << "setting ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
+      debug(ss.str());
     }
 
     int symboltable::get_ardepth(token t){
-      cout << "token is" << t << endl;
+      //cout << "token is" << t << endl;
       symboltableentry entry = *find_entry(t);
       return entry.get_ardepth();
     }
 
     void symboltable::set_offset(token t,int os){
       symboltableentry entry = *find_entry(t);
-      cout << "setting offset for " << t << " to " << os << endl;
+      stringstream ss;
+      ss << "setting offset for " << t << " to " << os << endl;
+      debug(ss.str());
       entry.set_offset(os);
     }
     int symboltable::get_offset(token t){
@@ -235,7 +247,9 @@ void symboltable::set_function(token t, vector<pair<token*,int> > plist){
     }
 
     void symboltable::set_ftoken(token t){
-      cout << "setting ftoken to " << t << endl;
+      stringstream ss;
+      ss <<"setting ftoken to " << t << endl;
+      debug(ss.str());
       ftoken = new token(t);
       //increment_ardepth(t); //return value
     }

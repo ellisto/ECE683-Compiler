@@ -77,12 +77,12 @@ class parser{
   int term(int * regnum);
   int factor(int*);
   void name_or_function_call(token);
-  void argument_list(token, int);
+  void argument_list(token, int,stringstream&);
   //  void number();
   //void string();
 
-  void debug(const char* m);
-  void debug(const char* m,int);
+  /* void debug(const char* m); */
+  /* void debug(const char* m,int); */
   
 };
 

@@ -35,3 +35,20 @@ void report_error(string e, int ln,token& t){
   //throw ss.str();
   cout << ss.str();
 }
+
+void debug(const char* m){
+#ifdef DEBUG
+  cout << m << " token: " << *next_token << endl;
+#endif
+}
+void debug(string m){
+#ifdef DEBUG
+  cout << m << " token: " << *next_token << endl;
+#endif
+}
+
+void debug(const char* m,int i){
+#ifdef DEBUG
+  cout << m << i << endl;
+#endif
+}

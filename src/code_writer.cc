@@ -1,5 +1,7 @@
 #include<sstream>
 #include "code_writer.h"
+#include "report_error.h"
+#include<sstream>
 
 #define DEBUG_REG
 
@@ -103,7 +105,7 @@ void code_writer::write_std_defs(string line){
   if(!std_defs.is_open()){
     std_defs.open(std_defs_file.c_str());
   }
- if(std_defs.is_open()){
+  if(std_defs.is_open()){
     std_defs << line << endl;
   }
 }
@@ -142,7 +144,9 @@ bool code_writer::use_reg(int rnum){
     return false;
   }
   if(!registers[rnum]){
-    cout << "using R" << rnum << endl;
+    stringstream ss;
+    ss << "using R" << rnum << endl;
+    debug(ss.str());
     registers[rnum] = true;
     return true;
   }else{
@@ -161,7 +165,9 @@ bool code_writer::free_reg(int rnum){
     return false;
   }
   if(registers[rnum]){
-    cout << "Freeing R" << rnum << endl;
+    stringstream ss;
+    ss << "Freeing R" << rnum << endl;
+    debug(ss.str());
     registers[rnum] = false;
     return true;
   }else{

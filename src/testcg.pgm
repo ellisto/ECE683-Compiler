@@ -1,11 +1,11 @@
 integer function myfunction()
   integer a;
-  integer function get10(integer b)
+  integer function add(integer b, integer c)
   begin
-    get10 := b;
+    add := b + c;
   end function;
 begin
-  a:=0;
-  a := get10(a+1);
+  a := 0;
+  a := add(2,5);
   myfunction := a;
 end function
