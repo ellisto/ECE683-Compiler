@@ -1,0 +1,77 @@
+digraph G {
+    rankdir=LR
+    node [shape = doublecircle];
+//FINAL STATES
+    number [label = "number\\newline4"];
+    id [label="id\\newline1"];
+    string [label="string\\newline3"] ;
+    comment [label="comment\\newline6"];
+    slash [label="/\\newline5"]
+    add [label="+\\newline7"];
+    sub [label="-\\newline8"];
+    bitand [label="\\&\\newline9"];
+    bitor [label="|\\newline10"];
+    lparen [label="(\\newline11"];
+    rparen [label=")\\newline12"];
+    lbracket [label="[\\newline13"];
+    rbracket [label="]\\newline14"];
+    asterisk [label="*\\newline15"];
+    period [label=".\\newline16"];
+    semicolon [label=";\\newline17"];
+    assign [label=":=\\newline19"];
+    relop [label="< >\\newline== !=\\newline20"]
+
+    node [shape=circle]
+// Intermediate States
+    start [label = "start\\newline0"];
+    "``" [label = "``...\\newline2"];
+    colon [label=":\\newline18"];
+    exclaim [label="!\\newline21"];
+    equal [label="=\\newline22"];
+
+    edge [label=a]
+    edge [texmode="math"]
+
+    start->id [label=letter]
+    id->id [label=letter]
+    id->id [label=digit]
+//    id->start [label="\\\\lambda"]
+
+    start->number [label=digit]
+    number->number [label=digit]
+//    number->start [label="\\\\lambda"]
+
+    start->slash [label="/"]
+    slash->comment [label="/"]
+    comment->comment [label="letter,digit,*"]
+//    comment->start [label=newline]
+
+    start->start [label=whitespace]
+
+    start->"``" [label="``"]
+    "``"->"``" [label="letter,digit,\\newline whitespace,etc"]
+    "``"->string [label="''"]
+
+    start->add[label="+"]
+    start->sub[label="-"]
+
+    start->bitand [label="\\&"]
+    start->bitor [label="|"]
+    start->lparen [label="("]
+    start->rparen [label=")"]
+    start->lbracket [label="["]
+    start->rbracket [label="]"]
+
+    start->asterisk [label="*"]
+    start->period [label="."]
+    start->semicolon [label=";"]
+
+    start->colon [label=":"]
+    colon->assign [label="="]
+
+    start->relop [label="<,>"]
+    start->equal [label="="]
+    start->exclaim [label="!"]
+    equal->relop [label="="]
+    exclaim->relop [label="="]
+}

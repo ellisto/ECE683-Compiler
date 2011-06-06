@@ -1,0 +1,70 @@
+
+\begin{tikzpicture}[>=latex,line join=bevel,]
+%%
+\node (a) at (211bp,68bp) [draw,circle] {$a$};
+  \node (and) at (578bp,93bp) [draw,circle] {$and$};
+  \node (begin) at (792bp,45bp) [draw,circle] {$begin$};
+  \node (b) at (211bp,400bp) [draw,circle] {$b$};
+  \node (number) at (211bp,484bp) [draw,circle] {$number$};
+  \node (string) at (211bp,290bp) [draw,circle] {$string$};
+  \node (be) at (404bp,351bp) [draw,circle] {$be$};
+  \node (begi) at (678bp,107bp) [draw,circle] {$begi$};
+  \node (beg) at (578bp,209bp) [draw,circle] {$beg$};
+  \node (/) at (211bp,162bp) [draw,circle] {$/$};
+  \node (an) at (404bp,65bp) [draw,circle] {$an$};
+  \node (start) at (39bp,275bp) [draw,circle] {$start$};
+  \node (id) at (211bp,604bp) [draw,circle] {$id$};
+  \node (comment) at (404bp,207bp) [draw,circle] {$comment$};
+  \draw [->] (number) ..controls (195bp,541bp) and (201bp,550bp)  .. (211bp,550bp) .. controls (218bp,550bp) and (223bp,546bp)  .. (number);
+  \pgfsetstrokecolor{black}
+  \draw (211bp,558bp) node {$digit$};
+  \draw [->] (a) ..controls (261bp,67bp) and (330bp,66bp)  .. (an);
+  \draw (304bp,74bp) node {$n$};
+  \draw [->] (b) ..controls (260bp,388bp) and (330bp,370bp)  .. (be);
+  \draw (304bp,389bp) node {$e$};
+  \draw [->] (and) ..controls (543bp,100bp) and (537bp,101bp)  .. (531bp,102bp) .. controls (174bp,152bp) and (162bp,95bp)  .. (91bp,159bp) .. controls (70bp,177bp) and (57bp,208bp)  .. (start);
+  \draw (304bp,131bp) node {$\lambda$};
+  \draw [->] (start) ..controls (90bp,318bp) and (128bp,349bp)  .. (163bp,373bp) .. controls (170bp,378bp) and (178bp,382bp)  .. (b);
+  \draw (118bp,364bp) node {$b$};
+  \draw [->] (id) ..controls (183bp,592bp) and (171bp,585bp)  .. (163bp,576bp) .. controls (151bp,562bp) and (157bp,553bp)  .. (145bp,539bp) .. controls (126bp,515bp) and (108bp,521bp)  .. (91bp,496bp) .. controls (72bp,467bp) and (55bp,375bp)  .. (start);
+  \draw (118bp,547bp) node {$\lambda$};
+  \draw [->] (string) ..controls (194bp,337bp) and (199bp,347bp)  .. (211bp,347bp) .. controls (219bp,347bp) and (224bp,342bp)  .. (string);
+  \draw (211bp,355bp) node {$letter,digit$};
+  \draw [->] (be) ..controls (452bp,312bp) and (512bp,263bp)  .. (beg);
+  \draw (504bp,295bp) node {$g$};
+  \draw [->] (an) ..controls (453bp,72bp) and (495bp,79bp)  .. (531bp,85bp) .. controls (534bp,85bp) and (536bp,86bp)  .. (and);
+  \draw (504bp,93bp) node {$d$};
+  \draw [->] (number) ..controls (140bp,421bp) and (93bp,379bp)  .. (91bp,377bp) .. controls (77bp,358bp) and (65bp,335bp)  .. (start);
+  \draw (118bp,428bp) node {$\lambda$};
+  \draw [->] (/) ..controls (253bp,169bp) and (296bp,176bp)  .. (331bp,185bp) .. controls (334bp,186bp) and (338bp,187bp)  .. (comment);
+  \draw (304bp,193bp) node {$//$};
+  \draw [->] (start) ..controls (24bp,318bp) and (29bp,327bp)  .. (39bp,327bp) .. controls (46bp,327bp) and (50bp,323bp)  .. (start);
+  \draw (39bp,335bp) node {$whitespace$};
+  \draw [->] (comment) ..controls (387bp,271bp) and (393bp,280bp)  .. (404bp,280bp) .. controls (412bp,280bp) and (417bp,276bp)  .. (comment);
+  \draw (404bp,288bp) node {$letter,digit,*$};
+  \draw [->] (start) ..controls (77bp,259bp) and (84bp,257bp)  .. (91bp,256bp) .. controls (115bp,251bp) and (122bp,250bp)  .. (145bp,256bp) .. controls (153bp,257bp) and (161bp,260bp)  .. (string);
+  \draw (118bp,264bp) node {$``$};
+  \draw [->] (comment) ..controls (285bp,204bp) and (176bp,210bp)  .. (91bp,246bp) .. controls (86bp,248bp) and (82bp,250bp)  .. (start);
+  \draw (211bp,230bp) node {$newline$};
+  \draw [->] (id) ..controls (202bp,631bp) and (204bp,641bp)  .. (211bp,641bp) .. controls (215bp,641bp) and (218bp,637bp)  .. (id);
+  \draw (211bp,649bp) node {$letter$};
+  \draw [->] (id) ..controls (163bp,631bp) and (169bp,659bp)  .. (211bp,659bp) .. controls (249bp,659bp) and (257bp,636bp)  .. (id);
+  \draw (211bp,667bp) node {$digit$};
+  \draw [->] (string) ..controls (145bp,284bp) and (110bp,281bp)  .. (start);
+  \draw (118bp,290bp) node {$''$};
+  \draw [->] (start) ..controls (52bp,192bp) and (68bp,105bp)  .. (91bp,85bp) .. controls (116bp,63bp) and (156bp,62bp)  .. (a);
+  \draw (118bp,93bp) node {$a$};
+  \draw [->] (beg) ..controls (613bp,174bp) and (633bp,153bp)  .. (begi);
+  \draw (627bp,168bp) node {$i$};
+  \draw [->] (begi) ..controls (718bp,85bp) and (735bp,76bp)  .. (begin);
+  \draw (732bp,86bp) node {$n$};
+  \draw [->] (start) ..controls (45bp,377bp) and (58bp,527bp)  .. (91bp,565bp) .. controls (114bp,591bp) and (154bp,600bp)  .. (id);
+  \draw (118bp,602bp) node {$letter$};
+  \draw [->] (start) ..controls (54bp,354bp) and (72bp,430bp)  .. (91bp,450bp) .. controls (107bp,466bp) and (131bp,474bp)  .. (number);
+  \draw (118bp,483bp) node {$digit$};
+  \draw [->] (start) ..controls (58bp,223bp) and (72bp,199bp)  .. (91bp,185bp) .. controls (118bp,166bp) and (157bp,161bp)  .. (/);
+  \draw (118bp,193bp) node {$/$};
+  \draw [->] (begin) ..controls (736bp,22bp) and (706bp,14bp)  .. (678bp,14bp) .. controls (211bp,14bp) and (211bp,14bp)  .. (211bp,14bp) .. controls (155bp,14bp) and (129bp,16bp)  .. (91bp,59bp) .. controls (69bp,83bp) and (53bp,175bp)  .. (start);
+  \draw (504bp,22bp) node {$\lambda$};
+%
+\end{tikzpicture}

@@ -1,0 +1,32 @@
+Lexer:
+make a vector of character classes.
+
+
+next_char = getc();
+
+then look up next_char, i.e.
+
+next_char_class=character_class[next_char];
+
+cur_state=next_state[cur_state, next_char_class]
+
+if(accepting_state[cur_state])
+	move to start state
+	build token
+	return
+endif
+
+DONT FORGET EOF as a token.
+
+write an error class. look up std error format. (so things like emacs can read 'em)
+
+
+Start out just recognizing things like +, -, comparisons, etc.
+
+keep track of line number!
+
+Make an enumeration for character classes.
+
+For identifiers/keywords: put keywords on the table right away, then
+just read 'em as ids and they are disregarded bc they are already in
+table.

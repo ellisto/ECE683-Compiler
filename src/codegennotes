@@ -1,0 +1,15 @@
+build activation record:
+
+-------
+return val
+return address
+1st param
+2nd param 
+... 
+nth param  <-- Frame ptr
+local decs
+------- <--Stack pointr
+
+
+just have a set offset for return val, return address,
+add params just like local decs

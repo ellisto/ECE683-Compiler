@@ -1,0 +1,11 @@
+integer function myfunction()
+  integer a;
+  integer function get10(integer b)
+  begin
+    get10 := b;
+  end function;
+begin
+  a:=0;
+  a := get10(a+1);
+  myfunction := a;
+end function

@@ -1,0 +1,56 @@
+wld be soemthing like:
+
+-------------------------
+#include <code_defs>
+#include <std defs>
+
+//generated code goes here//
+
+---------------------------
+
+----StdDefs----------
+Registers[MAX-USED]
+
+MM[0...1000]
+
+--------------------
+
+
+----code_defs------
+#def MAX_USED_REG 4
+------------------
+
+
+e.g: foo = a + b
+
+generates
+
+R[0] = a;
+R[1] = b;
+R[3] = R[0] + R[1];
+
+
+Assume infinitely many registers, just have to keep track and define
+number in code_defs.
+
+
+push activation record on the stack with:
+
+-chain pointer
+-return address
+-return value
+-args
+
+Designate R[0] to point to end of activation record,
+allocate space on the stack on top of stack for vars
+
+stack is virtual, i.e. is just in MM array,
+do things like 
+R[0] = MM[...]
+and
+MM[...]=...
+
+to add things to stack and change the stack pointer.
+
+
+

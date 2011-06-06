@@ -1,0 +1,62 @@
+
+// scoping....
+
+boolean function test ( )
+
+integer x;
+integer y;
+integer z;
+integer tmp;
+
+integer function foo(integer a)
+
+string z;
+
+ integer function bar(integer a) 
+ 
+ integer x;
+
+ begin
+ a := 0;
+ x := x-100;
+ y := y+450;
+ z := "z";
+
+ tmp := putInt(x);
+ tmp := putInt(y);
+ tmp := putInt(z);
+
+ bar := 0;
+ end function;
+  
+
+begin
+
+ z := "a";
+
+ tmp := putInt(x);
+ tmp := putInt(y);
+ tmp := putInt(z);
+
+ tmp := bar(44);
+
+ tmp := putInt(x);
+ tmp := putInt(y);
+ tmp := putInt(z);
+ foo := 0;
+
+end function;
+
+begin
+ x := 5;
+ y := 5;
+ z := 5;
+
+ tmp := foo(y);
+
+ tmp := putInt(x);
+ tmp := putInt(y);
+ tmp := putInt(z);
+ test := 1;
+
+end function

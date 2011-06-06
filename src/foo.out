@@ -1,0 +1,517 @@
+enter type_mark token: <8,integer>
+Got new token: <5,function>
+exit type_mark token: <5,function>
+setting ftoken to <-1,_GLOBAL>
+enter function_declaration token: <5,function>
+wrote code: L0: 
+wrote code: MM[R[0]] = R[1]; // store return address
+
+wrote code: R[1] = R[0] + 1; //set R[1] to point to top of stack
+
+enter function_header token: <5,function>
+Got new token: <1,myfunction>
+enter identifier token: <1,myfunction>
+Got new token: <24,(>
+exit identifier; tt is 0
+Got new token: <25,)>
+Got new token: <8,integer>
+exit function_header token: <8,integer>
+setting ftoken to <1,myfunction>
+setting ftoken to <1,myfunction>
+enter function_body token: <8,integer>
+enter declaration token: <8,integer>
+enter type_mark token: <8,integer>
+Got new token: <1,a>
+exit type_mark token: <1,a>
+enter declaration2 token: <1,a>
+enter variable_declaration token: <1,a>
+enter identifier token: <1,a>
+Got new token: <31,;>
+exit identifier; tt is 0
+wrote code: R[1] = R[1]+1; //allocate space for var
+
+token is<1,myfunction>
+ offset for a is 1
+exit variable_declaration token: <31,;>
+exit declaration2 token: <31,;>
+exit declaration token: <31,;>
+Got new token: <8,integer>
+enter declaration token: <8,integer>
+enter type_mark token: <8,integer>
+Got new token: <1,b>
+exit type_mark token: <1,b>
+enter declaration2 token: <1,b>
+enter variable_declaration token: <1,b>
+enter identifier token: <1,b>
+Got new token: <31,;>
+exit identifier; tt is 0
+wrote code: R[1] = R[1]+1; //allocate space for var
+
+token is<1,myfunction>
+ offset for b is 2
+exit variable_declaration token: <31,;>
+exit declaration2 token: <31,;>
+exit declaration token: <31,;>
+Got new token: <8,integer>
+enter declaration token: <8,integer>
+enter type_mark token: <8,integer>
+Got new token: <1,c>
+exit type_mark token: <1,c>
+enter declaration2 token: <1,c>
+enter variable_declaration token: <1,c>
+enter identifier token: <1,c>
+Got new token: <31,;>
+exit identifier; tt is 0
+wrote code: R[1] = R[1]+1; //allocate space for var
+
+token is<1,myfunction>
+ offset for c is 3
+exit variable_declaration token: <31,;>
+exit declaration2 token: <31,;>
+exit declaration token: <31,;>
+Got new token: <8,boolean>
+enter declaration token: <8,boolean>
+enter type_mark token: <8,boolean>
+Got new token: <1,l>
+exit type_mark token: <1,l>
+enter declaration2 token: <1,l>
+enter variable_declaration token: <1,l>
+enter identifier token: <1,l>
+Got new token: <31,;>
+exit identifier; tt is 1
+wrote code: R[1] = R[1]+1; //allocate space for var
+
+token is<1,myfunction>
+ offset for l is 4
+exit variable_declaration token: <31,;>
+exit declaration2 token: <31,;>
+exit declaration token: <31,;>
+Got new token: <6,begin>
+Got new token: <1,a>
+enter statement token: <1,a>
+enter assignment_statement token: <1,a>
+enter destination token: <1,a>
+enter identifier token: <1,a>
+Got new token: <32,:=>
+exit identifier; tt is 0
+exit destination; tt is 0
+Got new token: <0,2>
+using R2
+enter expression token: <0,2>
+enter arithOp token: <0,2>
+enter relation token: <0,2>
+enter term token: <0,2>
+enter factor token: <0,2>
+wrote code: R[2] = 2;//factor
+
+Got new token: <31,;>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <31,;>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <31,;>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <31,;>
+using R3
+Freeing R3
+exit expression2; tt is -1
+exit expression; tt is 0
+wrote code: MM[R[0]+1] = R[2]; //assignment_statement
+
+Freeing R2
+exit assignment_statement token: <31,;>
+exit statement token: <31,;>
+Got new token: <1,b>
+enter statement token: <1,b>
+enter assignment_statement token: <1,b>
+enter destination token: <1,b>
+enter identifier token: <1,b>
+Got new token: <32,:=>
+exit identifier; tt is 0
+exit destination; tt is 0
+Got new token: <0,5>
+using R2
+enter expression token: <0,5>
+enter arithOp token: <0,5>
+enter relation token: <0,5>
+enter term token: <0,5>
+enter factor token: <0,5>
+wrote code: R[2] = 5;//factor
+
+Got new token: <31,;>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <31,;>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <31,;>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <31,;>
+using R3
+Freeing R3
+exit expression2; tt is -1
+exit expression; tt is 0
+wrote code: MM[R[0]+2] = R[2]; //assignment_statement
+
+Freeing R2
+exit assignment_statement token: <31,;>
+exit statement token: <31,;>
+Got new token: <1,c>
+enter statement token: <1,c>
+enter assignment_statement token: <1,c>
+enter destination token: <1,c>
+enter identifier token: <1,c>
+Got new token: <32,:=>
+exit identifier; tt is 0
+exit destination; tt is 0
+Got new token: <0,1>
+using R2
+enter expression token: <0,1>
+enter arithOp token: <0,1>
+enter relation token: <0,1>
+enter term token: <0,1>
+enter factor token: <0,1>
+wrote code: R[2] = 1;//factor
+
+Got new token: <31,;>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <31,;>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <31,;>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <31,;>
+using R3
+Freeing R3
+exit expression2; tt is -1
+exit expression; tt is 0
+wrote code: MM[R[0]+3] = R[2]; //assignment_statement
+
+Freeing R2
+exit assignment_statement token: <31,;>
+exit statement token: <31,;>
+Got comment:   c := a + b + c;
+Got new token: <9,if>
+enter statement token: <9,if>
+enter if_statement token: <9,if>
+Got new token: <24,(>
+using R2
+enter expression token: <24,(>
+enter arithOp token: <24,(>
+enter relation token: <24,(>
+enter term token: <24,(>
+enter factor token: <24,(>
+Got new token: <1,a>
+enter expression token: <1,a>
+enter arithOp token: <1,a>
+enter relation token: <1,a>
+enter term token: <1,a>
+enter factor token: <1,a>
+enter identifier token: <1,a>
+Got new token: <33,<>
+exit identifier; tt is 0
+wrote code: R[2] = MM[R[0] + 1];//factor
+
+enter name_or_function_call token: <33,<>
+exit name_or_function_call token: <33,<>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <33,<>
+Got new token: <1,c>
+using R3
+enter term token: <1,c>
+enter factor token: <1,c>
+enter identifier token: <1,c>
+Got new token: <25,)>
+exit identifier; tt is 0
+wrote code: R[3] = MM[R[0] + 3];//factor
+
+enter name_or_function_call token: <25,)>
+exit name_or_function_call token: <25,)>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <25,)>
+exit relation2; tt is -1
+Freeing R3
+exit relation2; tt is 0
+wrote code: R[2] = R[2] < R[3]; //relation 
+
+exit relation; tt is 0
+enter arithOp2 token: <25,)>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <25,)>
+using R3
+Freeing R3
+exit expression2; tt is -1
+exit expression; tt is 0
+Got new token: <10,then>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <10,then>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <10,then>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <10,then>
+using R3
+Freeing R3
+exit expression2; tt is -1
+exit expression; tt is 0
+Got new token: <1,c>
+wrote code: R[2] = !R[2]; //if
+if(R[2]) goto L1; //if
+
+enter statement token: <1,c>
+enter assignment_statement token: <1,c>
+enter destination token: <1,c>
+enter identifier token: <1,c>
+Got new token: <32,:=>
+exit identifier; tt is 0
+exit destination; tt is 0
+Got new token: <1,a>
+using R3
+enter expression token: <1,a>
+enter arithOp token: <1,a>
+enter relation token: <1,a>
+enter term token: <1,a>
+enter factor token: <1,a>
+enter identifier token: <1,a>
+Got new token: <30,*>
+exit identifier; tt is 0
+wrote code: R[3] = MM[R[0] + 1];//factor
+
+enter name_or_function_call token: <30,*>
+exit name_or_function_call token: <30,*>
+exit factor; tt is 0
+Got new token: <24,(>
+using R4
+enter term token: <24,(>
+enter factor token: <24,(>
+Got new token: <0,2>
+enter expression token: <0,2>
+enter arithOp token: <0,2>
+enter relation token: <0,2>
+enter term token: <0,2>
+enter factor token: <0,2>
+wrote code: R[4] = 2;//factor
+
+Got new token: <2,+>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <2,+>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <2,+>
+Got new token: <0,10>
+using R5
+enter relation token: <0,10>
+enter term token: <0,10>
+enter factor token: <0,10>
+wrote code: R[5] = 10;//factor
+
+Got new token: <25,)>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <25,)>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <25,)>
+exit arithOp2; tt is -1
+Freeing R5
+exit arithOp2; tt is 0
+wrote code: R[4] = R[4] + R[5]; //arithop1
+
+exit arithOp; tt is 0
+enter expression2 token: <25,)>
+using R5
+Freeing R5
+exit expression2; tt is -1
+exit expression; tt is 0
+Got new token: <31,;>
+exit factor; tt is 0
+exit term; tt is 0
+wrote code: R[3] = R[3] * R[4]; //term
+
+exit term; tt is 0
+enter relation2 token: <31,;>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <31,;>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <31,;>
+using R5
+Freeing R5
+exit expression2; tt is -1
+exit expression; tt is 0
+wrote code: MM[R[0]+3] = R[3]; //assignment_statement
+
+Freeing R3
+exit assignment_statement token: <31,;>
+exit statement token: <31,;>
+Got new token: <11,else>
+wrote code: L1: 
+Got new token: <1,c>
+wrote code: R[2] = !R[2]; //if
+if(R[2]) goto L2; //if
+
+enter statement token: <1,c>
+enter assignment_statement token: <1,c>
+enter destination token: <1,c>
+enter identifier token: <1,c>
+Got new token: <32,:=>
+exit identifier; tt is 0
+exit destination; tt is 0
+Got new token: <0,1079>
+using R3
+enter expression token: <0,1079>
+enter arithOp token: <0,1079>
+enter relation token: <0,1079>
+enter term token: <0,1079>
+enter factor token: <0,1079>
+wrote code: R[3] = 1079;//factor
+
+Got new token: <31,;>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <31,;>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <31,;>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <31,;>
+using R5
+Freeing R5
+exit expression2; tt is -1
+exit expression; tt is 0
+wrote code: MM[R[0]+3] = R[3]; //assignment_statement
+
+Freeing R3
+exit assignment_statement token: <31,;>
+exit statement token: <31,;>
+Got new token: <7,end>
+wrote code: L2: 
+Freeing R2
+Got new token: <9,if>
+Got new token: <31,;>
+exit if_statement token: <31,;>
+exit statement token: <31,;>
+Got new token: <1,myfunction>
+enter assignment_statement token: <1,myfunction>
+enter destination token: <1,myfunction>
+enter identifier token: <1,myfunction>
+Got new token: <32,:=>
+exit identifier; tt is 0
+exit destination; tt is 0
+Got new token: <1,c>
+using R2
+enter expression token: <1,c>
+enter arithOp token: <1,c>
+enter relation token: <1,c>
+enter term token: <1,c>
+enter factor token: <1,c>
+enter identifier token: <1,c>
+Got new token: <31,;>
+exit identifier; tt is 0
+wrote code: R[2] = MM[R[0] + 3];//factor
+
+enter name_or_function_call token: <31,;>
+exit name_or_function_call token: <31,;>
+exit factor; tt is 0
+exit term; tt is 0
+enter relation2 token: <31,;>
+exit relation2; tt is -1
+exit relation; tt is 0
+enter arithOp2 token: <31,;>
+exit arithOp2; tt is -1
+wrote code: 
+exit arithOp; tt is 0
+enter expression2 token: <31,;>
+using R3
+Freeing R3
+exit expression2; tt is -1
+exit expression; tt is 0
+wrote code: MM[R[0]+1] = R[2]; //assignment_statement
+
+Freeing R2
+exit assignment_statement token: <31,;>
+Got new token: <7,end>
+Got new token: <5,function>
+Got new token: <34,EOF>
+exit function_body token: <34,EOF>
+wrote code: R[1] = MM[R[0]];
+
+wrote code: goto *R[1]; //write return statement
+
+exit function_declaration token: <34,EOF>
+
+
+#include "code_defs.h"
+#include "std_defs.h"
+#include <stdio.h>
+int main(){
+int i;
+goto MAIN;
+L0: MM[R[0]] = R[1]; // store return address
+R[1] = R[0] + 1; //set R[1] to point to top of stack
+R[1] = R[1]+1; //allocate space for var
+R[1] = R[1]+1; //allocate space for var
+R[1] = R[1]+1; //allocate space for var
+R[1] = R[1]+1; //allocate space for var
+R[2] = 2;//factor
+MM[R[0]+1] = R[2]; //assignment_statement
+R[2] = 5;//factor
+MM[R[0]+2] = R[2]; //assignment_statement
+R[2] = 1;//factor
+MM[R[0]+3] = R[2]; //assignment_statement
+R[2] = MM[R[0] + 1];//factor
+R[3] = MM[R[0] + 3];//factor
+R[2] = R[2] < R[3]; //relation 
+R[2] = !R[2]; //if
+if(R[2]) goto L1; //if
+R[3] = MM[R[0] + 1];//factor
+R[4] = 2;//factor
+R[5] = 10;//factor
+R[4] = R[4] + R[5]; //arithop1
+R[3] = R[3] * R[4]; //term
+MM[R[0]+3] = R[3]; //assignment_statement
+L1: R[2] = !R[2]; //if
+if(R[2]) goto L2; //if
+R[3] = 1079;//factor
+MM[R[0]+3] = R[3]; //assignment_statement
+L2: R[2] = MM[R[0] + 3];//factor
+MM[R[0]+1] = R[2]; //assignment_statement
+R[1] = MM[R[0]];
+goto *R[1]; //write return statement
+MAIN: R[0] = 0;
+R[1] = &&end;
+call1: goto L0;
+end: for(i = 0; i < MAX_USED_REGISTER; i++)
+printf("R[%d] = %d\n",i,R[i]);
+ return 0;
+ }
+
+
+
+
+R[0] = 0
+R[1] = 134514149
+R[2] = 1079
+R[3] = 1079
+R[4] = 0
+R[5] = 0

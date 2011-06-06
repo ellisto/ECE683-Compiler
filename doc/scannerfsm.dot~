@@ -1,0 +1,128 @@
+digraph G {                                                              
+    rankdir=TB
+    overlap=false
+    node [shape = doublecircle]; 
+//FINAL STATES
+    number [label = "number\n4"];
+    id [label="id\n1"];
+    string [label="string\n3"] ;
+    comment [label="comment\n6"];
+    slash [label="/\n5"]
+    add [label="+\n7"];
+    sub [label="-\n8"];
+    bitand [label="&\n9"];
+    bitor [label="|\n10"];
+    lparen [label="(\n11"];
+    rparen [label=")\n12"];
+    lbracket [label="[\n13"];
+    rbracket [label="]\n14"];
+    asterisk [label="*\n15"];
+    period [label=".\n16"];
+    semicolon [label=";\n17"];
+    assign [label=":=\n19"];
+    relop [label="< >\n== !=\n20"]
+    
+    node [shape=circle]                                                                                      
+// Intermediate States
+    start [label = "start\n0"];
+    "``" [label = "``...\n2"];
+    colon [label=":\n18"];
+    exclaim [label="!\n21"];
+    equal [label="=\n22"];
+
+    edge [label=a]
+    edge [texmode="math"]
+    
+    start->id [label=letter]
+    id->id [label=letter]
+    id->id [label=digit]
+//    id->start [label="\\lambda"]
+    
+    start->number [label=digit]
+    number->number [label=digit]
+//    number->start [label="\\lambda"]
+    
+    start->slash [label="/"]
+    slash->comment [label="/"]
+    comment->comment [label="letter,digit,*"]
+//    comment->start [label=newline]
+
+    start->start [label=whitespace]
+
+    start->"``" [label="``"]
+    "``"->"``" [label="letter,digit,\nwhitespace,etc"]
+    "``"->string [label="''"]
+
+    start->add[label="+"]
+    start->sub[label="-"]	
+    
+    start->bitand [label="&"]
+    start->bitor [label="|"]
+    start->lparen [label="("]
+    start->rparen [label=")"]
+    start->lbracket [label="["]
+    start->rbracket [label="]"]
+    
+    start->asterisk [label="*"]
+    start->period [label="."]
+    start->semicolon [label=";"]
+    
+    start->colon [label=":"]
+    colon->assign [label="="]
+    
+    start->relop [label="<,>"]
+    start->equal [label="="]
+    start->exclaim [label="!"]
+    equal->relop [label="="]
+    exclaim->relop [label="="]
+    
+    
+    
+    
+
+/*subgraph cluster_keywords{
+      subgraph cluster_and{
+        start->a [label=a]
+        a->an [label=n]
+        an->and [label=d]
+        and->start [label="\\lambda"]
+      }
+      subgraph cluster_begin{
+        start->b[label=b]
+      	b->be [label=e]
+      	be->beg [label=g]
+      	beg->begi [label=i]
+      	begi->begin [label=n]
+      	begin->start [label="\\lambda"]
+      }
+      
+      subgraph cluster_boolean{
+        b->bo[label=o]
+      	bo->boo[label=o]
+      	boo->bool[label=l]
+      	bool->boole[label=e]
+      	boole->boolea[label=a]
+      	boolea->boolean[label=n]
+      	boolean->start [label="\\lambda"]
+      }     		  
+      start->c[label=c]
+      c->ca[label=a]
+      ca->cas[label=s]
+      cas->case[label=e]
+      case->start[label="\\lambda"]
+      
+      start->d[label=d]
+      d->de[label=e]
+      de->def[label=f]
+      def->defa[label=a]
+      defa->defau[label=u]
+      defau->defaul[label=l]
+      defaul->default[label=t]
+      default->start[label="\\lambda"]
+
+      
+      label = Keywords
+    }
+*/    
+  }	
+

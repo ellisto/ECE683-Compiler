@@ -1,0 +1,14 @@
+TEX=pdflatex
+TEXFLAGS=--shell-escape
+SOURCES=compiler.tex 
+EXECUTABLE=compiler.pdf
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(SOURCES) 
+	$(TEX) $(TEXFLAGS) $(SOURCES)
+
+.PHONY: clean
+clean:
+	rm -rf *.aux *.log *~  $(EXECUTABLE)
+

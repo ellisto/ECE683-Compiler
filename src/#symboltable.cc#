@@ -1,0 +1,21 @@
+#include "symboltable.h"
+
+symboltable::symboltable(){
+    table = set<token>();
+  //  table = map<char*,token>();
+}
+token * symboltable::add(token t){
+  pair<set<token>::iterator,bool> ret;
+  
+  ret = table.insert(t);
+  
+  return const_cast<token *> (&(*ret.first));
+}
+
+token * symboltable::find(token t){
+  return const_cast<token *> (&(*table.find(t)));
+}
+void symboltable::set_tokentype(token t){
+  
+}
+void symboltable::get_tokentype(token);

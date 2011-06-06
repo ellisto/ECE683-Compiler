@@ -1,0 +1,13 @@
+
+Type Checking
+
+1. Symbol_table
+   a. add type information when processing a declaration
+      i. functions have a return type _and_ a parameter list.
+   b. add scope tracking/management functions
+
+symbol table/scoping:
+have a stack of symbol tables; create a new one
+when entering a new scope; go up the chain if symbol is not found in
+st on top of stack.
+

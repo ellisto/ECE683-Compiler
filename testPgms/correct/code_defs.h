@@ -1,0 +1,1 @@
+#define MAX_USED_REGISTER 0

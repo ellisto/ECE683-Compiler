@@ -1,0 +1,42 @@
+integer function myfunc(integer arrayparam[7])
+	integer a1;
+ begin
+	 a1:=1;
+	 myfunc := a1;
+end function
+
+string function myfunc2(integer a, boolean b)
+        integer a2;
+ begin
+ 	 a2:=2;
+	 myfunc2:="a2";
+ end function
+
+boolean function anotherfunc()
+integer a1;
+integer a2;
+integer a3;
+string a5;
+integer myarray[7];
+boolean b1;
+string stringstringstring;
+integer function innerfunc()
+	begin
+         a1:= a2 | a3;
+	 //	 a15 := 15;
+	 innerfunc := a1;
+	end function;
+begin
+  if a1 < 2 then
+  //inside the if statement
+    a1:=a1 & (2*3);
+    //a1[5] := 23;
+    myarray[1] := a1;
+    //myarray[2] := a5;
+    a5:= myfunc2(a1,b1);
+    a3 := myfunc(myarray);
+  end if;
+  anotherfunc := b1;
+end function
+
+

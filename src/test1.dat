@@ -1,0 +1,6 @@
+integer function myfunc()
+	integer a1;
+ begin
+	 a1:=1;
+	 myfunc := a1;
+end function

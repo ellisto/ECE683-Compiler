@@ -1,0 +1,85 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{dot2texi}
+\usepackage{tikz}                                                                                               
+\usetikzlibrary{shapes,arrows}  
+
+\author{TJ Ellis}
+\title{Scanner}
+
+\begin{document}
+\maketitle
+
+\begin{dot2tex}[options=-tmath]
+  digraph G {                                                              
+    rankdir=LR                                                                                               
+    node [shape=circle]                                                                                      
+    edge [label=a]
+    edge [texmode="math"]
+    subgraph [labeljust=r]                                                                                   
+    
+    start->id [label=letter]
+    id->id [label=letter]
+    id->id [label=digit]
+    id->start [label="\\lambda"]
+    
+    start->number [label=digit]
+    number->number [label=digit]
+    number->start [label="\\lambda"]
+    
+    start->"/" [label="/"]
+    "/"->comment [label="//"]
+    comment->comment [label="letter,digit,*"]
+    comment->start [label=newline]
+
+    start->start [label=whitespace]
+
+    start->string [label="``"]
+    string->string [label="letter,digit"]
+    string->start [label="''"]
+
+    subgraph keywords{
+      start->a [label=a]
+      a->an [label=n]
+      an->and [label=d]
+      and->start [label="\\lambda"]
+      
+      start->b[label=b]
+      b->be [label=e]
+      be->beg [label=g]
+      beg->begi [label=i]
+      begi->begin [label=n]
+      begin->start [label="\\lambda"]
+      label = keywords
+    }
+  }  
+\end{dot2tex}   
+
+\subsection*{Keywords}
+\begin{itemize}
+\item function
+\item begin
+\item end
+\item integer
+\item boolean
+\item string
+\item if
+\item then
+\item else
+\item while
+\item case
+\item is
+\item when
+\item default
+\item and
+\item or
+\item not
+\end{itemize}
+
+
+% subgraph cluster_m0 {                                                                                    
+    %   q_1 -> q_2                                                                                       
+    %   q_1 -> q_1 [label=b]                                                                             
+    %   label=M0                                                                                         
+    % }                                                                                                        
+\end{document}

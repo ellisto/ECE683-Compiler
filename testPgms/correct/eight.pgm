@@ -1,0 +1,27 @@
+
+// scoping....
+
+integer function test() 
+
+integer x;
+integer y;
+integer z;
+integer tmp;
+
+begin
+
+  x := -5;
+  y := 5;
+  z := 3;
+
+  while x < 0
+    case x is
+      when 0 then temp := putInt(y-x/2);
+      when 1 then temp := putInt(y-x*2);
+      default then temp := putInt(y-x);
+    end case;
+    x := x + 1;
+  end while;
+  test := 6;
+
+end function
