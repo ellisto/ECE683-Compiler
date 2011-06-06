@@ -74,8 +74,9 @@ void code_writer::finalize_generated_code(){
 		   <<  "goto L0;" << endl
 		   << "end: "
 #ifdef DEBUG_REG
-      // << "for(i = 0; i < MAX_USED_REGISTER; i++)" << endl
-      //		   << "printf(\"R[%d] = %d\\n\",i,R[i]);" <<endl
+		   << "for(i = 0; i < MAX_USED_REGISTER; i++)" << endl
+      		   << "printf(\"R[%d] = %d\\n\",i,R[i]);" <<endl
+		   << "printf(\"\\n\\n\");" << endl
 		   << "for(i = 0; i < 20; i++)" << endl
 		   << "printf(\"MM[%d] = %d\\n\",i,MM[i]);" <<endl
 #endif

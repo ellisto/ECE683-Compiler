@@ -4,8 +4,13 @@ integer function myfunction()
   begin
     add := b + c;
   end function;
+  integer function add10(integer c)
+  begin
+   add10 := c + 10;
+  end function;
 begin
   a := 0;
   a := add(2,5);
+  a := add10(7);
   myfunction := a;
 end function

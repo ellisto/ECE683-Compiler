@@ -3,6 +3,7 @@
 #include<sstream>
 #include "report_error.h"
 #include "token.h"
+#include "enums.h"
 
 using namespace std;
 
@@ -38,12 +39,12 @@ void report_error(string e, int ln,token& t){
 
 void debug(const char* m){
 #ifdef DEBUG
-  cout << m << " token: " << *next_token << endl;
+  cout << m << endl;
 #endif
 }
 void debug(string m){
 #ifdef DEBUG
-  cout << m << " token: " << *next_token << endl;
+  cout << m << endl;
 #endif
 }
 

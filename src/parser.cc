@@ -121,7 +121,7 @@ void parser::function_declaration(int typemark){
 
   token ftoken = function_header(typemark);
   
-  st->set_ftoken(ftoken);
+  //st->set_ftoken(ftoken);
   st->set_label(ftoken,lblfunc);
   st->get_label(ftoken);
   add_scope(ftoken);
@@ -848,19 +848,25 @@ void parser::name_or_function_call(token t){
     string lblfunc = st->get_label(t);
     string lblreturn = c->get_next_label();
     stringstream ss;
-    st->increment_ardepth(t);
-    st->set_offset(t,st->get_ardepth(t)); // where the return value will be stored.
+    cout << "t: " << t << endl
+	 << "ftoken: " << st->get_ftoken() << endl;
+    st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
+
+    st->set_offset(t,st->get_ardepth(st->get_ftoken())); // where the return value will be stored.
     ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
-       << "R[1] = R[1] + 1;" << endl
+       << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
        << "R[0] = R[1]; //set frame ptr to top of stk" << endl
        << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
-       << "R[1] = R[1] + 2;" << endl;
+       << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
     if(next_token->get_type() == RPAREN){
       scan_next_token();
       break;
     } 
     //add_scope(t);
-    argument_list(t,0,ss);
+    c->write_code(ss.str());
+    ss.clear();
+    ss.str("");
+    argument_list(t,0);
     ss << "goto " << lblfunc << ";" << endl
        << lblreturn << ": R[1] = R[0];" << endl
        << "R[0] = MM[R[0]-1];" << endl;
@@ -871,7 +877,7 @@ void parser::name_or_function_call(token t){
   }
   debug("exit name_or_function_call");
 }
-void parser::argument_list(token t, int argnum,stringstream& ss){
+void parser::argument_list(token t, int argnum){//,stringstream& ss){
   if(error_flag){return;}
   debug("enter argument_list");
   vector<pair<token*,int> > plist = *(st->get_parameterlist(t));
@@ -879,8 +885,8 @@ void parser::argument_list(token t, int argnum,stringstream& ss){
 
   if(plist.size() > 0){
     token ptok = *next_token;
-    //    stringstream ss;
-
+    stringstream ss;
+	
     int* expressionreg;
     expressionreg = new int(c->get_next_free_reg());
     c->use_reg(*expressionreg);
@@ -897,15 +903,15 @@ void parser::argument_list(token t, int argnum,stringstream& ss){
       
       //ss << "MM[R[0]+" << st->get_offset(argtok) << "]"  //destination
       ss << "MM[R[0]+" << argnum + 2 << "]"  //destination
-	 << " = R[" << *expressionreg << "]; //passing argument" << endl;
-      //c->write_code(ss.str());
+	 << " = R[" << *expressionreg << "]; //passing argument " << argtok.get_value() << endl;
+      c->write_code(ss.str());
     }
 
     c->free_reg(*expressionreg);
 
     if(next_token->get_type() == COMMA){
       scan_next_token();
-      argument_list(t,++argnum,ss);
+      argument_list(t,++argnum);
     }
   }
 
@@ -915,7 +921,8 @@ void parser::argument_list(token t, int argnum,stringstream& ss){
 void parser::add_scope(token ftoken){
   symboltable * new_st = new symboltable();
   new_st->set_prev(st);
-  new_st->set_ftoken(st->get_ftoken());
+  //new_st->set_ftoken(st->get_ftoken());
+  new_st->set_ftoken(ftoken);
   st = new_st;
   //cout << "ftoken here: " << st->get_ftoken() << endl;
   s->set_st(st); //sync scanner st
