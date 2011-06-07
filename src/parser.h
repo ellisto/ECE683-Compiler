@@ -77,7 +77,7 @@ class parser{
   int term(int * regnum);
   int factor(int*);
   int* name_or_function_call(token);
-  void argument_list(token, int);
+  void argument_list(token, int,int,stringstream&);
   
   
 };

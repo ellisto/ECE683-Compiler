@@ -197,9 +197,21 @@ pair<int,token> parser::parameter(){
   token paramname = *next_token;
   //variable_declaration(tm);
   identifier(tm);
-  if(st->is_array(paramname)){
+  
+  if(next_token->get_type() == LBRACKET){
+    check_token_type(LBRACKET,"'['");
+    scan_next_token();
+    check_token_type(NUMBER,"array size");
+    int arraysize = atoi((next_token->get_value()).c_str());
+    st->set_arraysize(paramname,arraysize);
+    scan_next_token();
+    check_token_type(RBRACKET,"']'");
+    scan_next_token();  
+
     tm = ARRAYTYPE;
   }
+
+
   debug("exit parameter");
   return pair<int,token>(tm,paramname);
 }
@@ -212,11 +224,16 @@ void parser::function_body(token ftoken){
   for(vector<pair<token*,int> >::iterator it = plist.begin(); it != plist.end(); it++){
     int tt = it->second;
     token argtok = *(it->first);
-    if(tt == INTEGERTYPE || tt == BOOLEANTYPE){
-      ss << "R[1] = R[1]+1; //allocate space for arg " + argtok.get_value()  << endl;
-      st->set_offset(argtok,st->get_ardepth(st->get_ftoken()));
+    st->set_offset(argtok,st->get_ardepth(st->get_ftoken()));
+    if(tt == ARRAYTYPE){
+      int arraysize = st->get_arraysize(argtok);
+      ss << "R[1] = R[1] + " << arraysize  << "; //allocate space for array arg "  
+	 << argtok.get_value()  << endl;
+      st->set_ardepth(st->get_ftoken(),st->get_ardepth(st->get_ftoken()) + arraysize);
+    }else if(tt == INTEGERTYPE || tt == BOOLEANTYPE){
+      ss << "R[1] = R[1] + 1; //allocate space for arg " << argtok.get_value()  << endl;
       st->increment_ardepth(st->get_ftoken());
-    }//TODO: add allocations for strings, arrays
+    }//TODO: add allocations for strings
   }
   debug("done adding parameters to st");
 
@@ -905,20 +922,22 @@ int* parser::name_or_function_call(token t){
       st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
       
       st->set_offset(t,st->get_ardepth(st->get_ftoken())); // where the return value will be stored.
-      ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
-	 << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
-	 << "R[0] = R[1]; //set frame ptr to top of stk" << endl
-	 << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
-	 << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
+      
       if(next_token->get_type() == RPAREN){
 	scan_next_token();
 	break;
       } 
       //add_scope(t);
-      c->write_code(ss.str());
-      ss.clear();
-      ss.str("");
-      argument_list(t,0);
+
+      //ss.clear();
+      //ss.str("");
+
+      ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
+	 << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
+	 << "R[0] = R[1]; //set frame ptr to top of stk" << endl
+	 << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
+	 << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
+      argument_list(t,0,2,ss); //initial offset of 2
       ss << "goto " << lblfunc << ";" << endl
 	 << lblreturn << ": R[1] = R[0];" << endl
 	 << "R[0] = MM[R[0]-1];" << endl;
@@ -931,7 +950,7 @@ int* parser::name_or_function_call(token t){
   debug("exit name_or_function_call");
   return expressionreg;
 }
-void parser::argument_list(token t, int argnum){//,stringstream& ss){
+void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
   if(error_flag){return;}
   debug("enter argument_list");
   vector<pair<token*,int> > plist = *(st->get_parameterlist(t));
@@ -939,33 +958,43 @@ void parser::argument_list(token t, int argnum){//,stringstream& ss){
 
   if(plist.size() > 0){
     token ptok = *next_token;
-    stringstream ss;
+    //stringstream ss;
 	
     int* expressionreg;
     expressionreg = new int(c->get_next_free_reg());
     c->use_reg(*expressionreg);
     int tt1 = expression(expressionreg);
     int tt2 =  plist[argnum].second;
-
+    bool isarray = false;
+    int arraysize = -1;
     if(tt2 == ARRAYTYPE){
       tt2 = arrayparams[argnum].first;
-      check_array_sizes(arrayparams[argnum].second,st->get_arraysize(ptok));
+      arraysize = arrayparams[argnum].second;
+      check_array_sizes(arraysize,st->get_arraysize(ptok));
+      isarray = true;
     }
 
     if(check_types(tt1,tt2)){//if types are right, add arg to symbol table
       token argtok = *st->add(*(plist[argnum].first)); 
+      if(isarray){
+	for(int i = 0; i < arraysize; i++){
+	  ss << "MM[R[0] + " << argnum + i +  offset << "]"  //destination
+	   << " = R[" << *expressionreg << "]; //passing argument " << argtok.get_value() << endl;
+	}
+	//offset += arraysize;
+      }else{
+	ss << "MM[R[0] + " << argnum + offset << "]"  //destination
+	   << " = R[" << *expressionreg << "]; //passing argument " << argtok.get_value() << endl;
+      }
+      //c->write_code(ss.str());
       
-      //ss << "MM[R[0]+" << st->get_offset(argtok) << "]"  //destination
-      ss << "MM[R[0]+" << argnum + 2 << "]"  //destination
-	 << " = R[" << *expressionreg << "]; //passing argument " << argtok.get_value() << endl;
-      c->write_code(ss.str());
     }
 
     c->free_reg(*expressionreg);
 
     if(next_token->get_type() == COMMA){
       scan_next_token();
-      argument_list(t,++argnum);
+      argument_list(t,++argnum,offset,ss);
     }
   }
 

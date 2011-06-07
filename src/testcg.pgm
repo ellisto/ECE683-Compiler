@@ -1,6 +1,10 @@
 integer function myfunction()
   integer i;
   integer a[5];
+  integer function arfunc(integer b)
+   begin
+    arfunc := b;
+   end function;
 begin
   i := 1;
   a[0] := 0;
@@ -8,5 +12,5 @@ begin
     a[i] := a[i-1] + 5;
     i := i + 1;
   end while;
-  myfunction := a[3];
+  myfunction := arfunc(3);
 end function
