@@ -230,10 +230,10 @@ void parser::function_body(token ftoken){
       ss << "R[1] = R[1] + " << arraysize  << "; //allocate space for array arg "  
 	 << argtok.get_value()  << endl;
       st->set_ardepth(st->get_ftoken(),st->get_ardepth(st->get_ftoken()) + arraysize);
-    }else if(tt == INTEGERTYPE || tt == BOOLEANTYPE){
+    }else if(tt == INTEGERTYPE || tt == BOOLEANTYPE || tt == STRINGTYPE){
       ss << "R[1] = R[1] + 1; //allocate space for arg " << argtok.get_value()  << endl;
       st->increment_ardepth(st->get_ftoken());
-    }//TODO: add allocations for strings
+    }
   }
   debug("done adding parameters to st");
 
@@ -324,10 +324,15 @@ void parser::variable_declaration(int tm){
     ss << "R[1] = R[1] + " << arraysize << "; // allocate space for array " 
        << varid.get_value() << endl;
     st->set_ardepth(ftoken, ardepth + arraysize);
-  }else if(tm == INTEGERTYPE || tm == BOOLEANTYPE){
+  }else if(tm == INTEGERTYPE || tm == BOOLEANTYPE || tm == STRINGTYPE){
     ss << "R[1] = R[1] + 1; //allocate space for var" << varid.get_value() << endl;
     st->increment_ardepth(ftoken);
-  }//TODO: add allocations for strings
+  }if(tm == STRINGTYPE){
+    //if its a string, we've already allocated space on stack for the
+    //ptr, but we need to allocate room in the string table.  or maybe
+    //we dont. this should be the job of whatever code assigns a value
+    //to the var.
+  }
   c->write_code(ss.str());
   debug("exit variable_declaration");
 }
@@ -411,9 +416,6 @@ int parser::destination(stringstream& ss, int* idxreg){
       report_error("Indexing a non-array: " + potentialarraytok.get_value() + " is not an array.",l->get_linenumber());
     }
     scan_next_token();
-    //this needs to be done in assingment_stmt i think
-    //int* expressionreg = new int(c->get_next_free_reg());
-    //c->use_reg(*expressionreg);
 
     // do we need to check the type returned for the index expression?
     // Should at least not be string...
@@ -839,7 +841,6 @@ int parser::factor(int * regnum){
   int tt = -1;
   token ftoken = *next_token;
   stringstream ss;
-  //cout << "factor(); token: " << *next_token << endl;
   switch(next_token->get_type()){
   case LPAREN:
     {
@@ -872,12 +873,17 @@ int parser::factor(int * regnum){
       c->write_code(ss.str());
       scan_next_token();
       break;
-    case STRING:
+    }
+  case STRING:
+    {
       tt=STRINGTYPE;
-      scan_next_token();
+      //need to put string in string table, return address
+      int straddr = c->add_string(ftoken.get_value());
+      ss << "R[" << *regnum << "] = " << straddr << "; // string factor " << ftoken.get_value() << endl;
+      c->write_code(ss.str());
+      scan_next_token();   
     }
   }
-  //cout << "parsed factor" << endl;
   debug("exit factor; tt is " , tt);
   return tt;
 }

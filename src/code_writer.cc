@@ -1,7 +1,6 @@
-#include<sstream>
+#include <sstream>
 #include "code_writer.h"
 #include "report_error.h"
-#include<sstream>
 
 #define DEBUG_REG
 
@@ -10,6 +9,8 @@ code_writer::code_writer(){
   // R0 and R1 should be reserved, and start out full.
   registers.push_back(1); 
   registers.push_back(1);
+  string_table_ptr = MM_SIZE;
+  string_table_ptr--;
 }
 code_writer::code_writer(string gen_file,string code_defs_file,string std_defs_file){
   this->gen_file = gen_file;
@@ -22,15 +23,17 @@ code_writer::code_writer(string gen_file,string code_defs_file,string std_defs_f
   // R0 and R1 should be reserved, and start out full.
   registers.push_back(1); 
   registers.push_back(1);
-  /*code_defs.open(code_defs_file.c_str());
-  std_defs.open(std_defs_file.c_str());*/
+  string_table_ptr = MM_SIZE;
+  string_table_ptr--;
 }
 void code_writer::init_code_defs(){
   if(!code_defs.is_open()){
     code_defs.open(code_defs_file.c_str());
   }
   if(code_defs.is_open()){
-    code_defs << "#define MAX_USED_REGISTER " << registers.size()  << endl;
+    int mm_size = MM_SIZE;
+    code_defs << "#define MAX_USED_REGISTER " << registers.size()  << endl
+	      << "#define MM_SIZE " << mm_size  << endl;
   }
 }
 void code_writer::init_std_defs(){
@@ -41,7 +44,7 @@ void code_writer::init_std_defs(){
     std_defs << "#include \"" << code_defs_file << "\"" << endl
 	     << endl
 	     << "int R[MAX_USED_REGISTER];" << endl
-	     <<  "int MM[1000];" << endl;
+	     <<  "int MM[MM_SIZE];" << endl;
   }
 }
 void code_writer::init_generated_code(){
@@ -193,4 +196,21 @@ string code_writer::get_next_label(){
   stringstream ss;
   ss << "L" << label_num++;
   return ss.str();
+}
+
+int code_writer::add_string(string str){
+  //char * cstr = str.c_str();
+  stringstream ss;
+  str.erase(0,1);
+  str.erase(str.length()-1,1);
+  int strstart = string_table_ptr;
+  for(int i = 0; i < str.length(); i++){
+    ss << "MM[" << strstart - i << "] = \'" << str[i] << "\';" << endl;
+  }
+  ss << "MM[" << strstart - str.length() << "] = \'\\0\';" << endl;
+  write_code(ss.str());
+
+  string_table_ptr -= (str.length() + 1); // move ptr so it points at
+					  // next free slot for string
+  return strstart;
 }

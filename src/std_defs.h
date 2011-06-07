@@ -1,4 +1,4 @@
 #include "code_defs.h"
 
 int R[MAX_USED_REGISTER];
-int MM[1000];
+int MM[MM_SIZE];

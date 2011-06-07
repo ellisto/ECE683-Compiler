@@ -36,6 +36,7 @@ class code_writer{
   ofstream std_defs;
   int register_num;
   int label_num;
+  int string_table_ptr;
   string gen_file, code_defs_file, std_defs_file;
   vector<bool> registers;
  public:
@@ -65,6 +66,8 @@ class code_writer{
   string get_std_defs_filename();
   string get_code_defs_filename();
   string get_next_label();
+
+  int add_string(string); //returns address in MM array
 };
 
 #endif // CODE_WRITER_H

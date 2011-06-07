@@ -1,16 +1,21 @@
-integer function myfunction()
+string function myfunction()
   integer i;
+  string s1;
+  string s2;
   integer a[5];
-  integer function arfunc(integer b)
+  string function arfunc(string b)
    begin
     arfunc := b;
    end function;
 begin
   i := 1;
+  s1 := "Hello World";
+  s2 := "foo bar";
+  s1 := s2;
   a[0] := 0;
   while (i < 5)
     a[i] := a[i-1] + 5;
     i := i + 1;
   end while;
-  myfunction := arfunc(3);
+  myfunction := arfunc(s1);
 end function
