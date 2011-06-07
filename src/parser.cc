@@ -362,7 +362,10 @@ void parser::assignment_statement(){
   if(error_flag){return;}
   debug("enter assignment_statement");
   stringstream ss;
-  int tt1 = destination(ss);
+  int* idxreg;
+  idxreg = new int(c->get_next_free_reg());
+  c->use_reg(*idxreg);
+  int tt1 = destination(ss,idxreg);
   check_token_type(ASSIGN,":=");
 
   scan_next_token();
@@ -376,21 +379,31 @@ void parser::assignment_statement(){
   ss << " = R[" << *expressionreg << "]; //assignment_statement" << endl;
   c->write_code(ss.str());
   c->free_reg(*expressionreg);
+  c->free_reg(*idxreg);
   debug("exit assignment_statement");
 }
 
-int parser::destination(stringstream& ss){
+int parser::destination(stringstream& ss, int* idxreg){
   if(error_flag){return -1;}
   debug("enter destination");
   token potentialarraytok = *next_token;
   int tt = identifier();
-  ss << "MM[R[0]+" << st->get_offset(potentialarraytok);
+  ss << "MM[R[0] + " << st->get_offset(potentialarraytok);
   if(next_token->get_type() == LBRACKET){ //array
     if(!st->is_array(potentialarraytok)){
       report_error("Indexing a non-array: " + potentialarraytok.get_value() + " is not an array.",l->get_linenumber());
     }
     scan_next_token();
-    expression();
+    //this needs to be done in assingment_stmt i think
+    //int* expressionreg = new int(c->get_next_free_reg());
+    //c->use_reg(*expressionreg);
+
+    // do we need to check the type returned for the index expression?
+    // Should at least not be string...
+    expression(idxreg);
+    //Check with wilsey to see if this is kosher, or if we must put
+    //R[0] + R[x] in a register first
+    ss << " + R[" << *idxreg << "]"; //add index offset
     check_token_type(RBRACKET,"]");
     scan_next_token();
   }
@@ -812,83 +825,111 @@ int parser::factor(int * regnum){
   //cout << "factor(); token: " << *next_token << endl;
   switch(next_token->get_type()){
   case LPAREN:
-    scan_next_token();
-    tt = expression(regnum);
-    check_token_type(RPAREN,"')'");
-    scan_next_token();
-    break;
-
+    {
+      scan_next_token();
+      tt = expression(regnum);
+      check_token_type(RPAREN,"')'");
+      scan_next_token();
+      break;
+    }
   case ID:
-    tt = identifier();
-    //TODO: worry about codegen for arrays
-    name_or_function_call(ftoken);
-    ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken) << "];//factor " << ftoken.get_value() << endl;
-    c->write_code(ss.str());
-    break;
-
+    {
+      tt = identifier();
+      int* idxreg = name_or_function_call(ftoken);
+      ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken);
+      if(st->is_array(ftoken)){
+	//Check with wilsey to see if this is kosher, or if we must put
+	//R[0] + R[x] in a register first
+	ss << " + R[" << *idxreg << "]"; //adding index offset
+	c->free_reg(*idxreg); //free up idx reg
+      }
+      ss << "];//factor " << ftoken.get_value() << endl;
+      c->write_code(ss.str());
+      break;
+    }
+    
   case NUMBER:
-    tt = INTEGERTYPE;
-    ss << "R[" << *regnum << "] = " << ftoken.get_value() << ";//factor" << endl;
-    c->write_code(ss.str());
-    scan_next_token();
-    break;
-  case STRING:
-    tt=STRINGTYPE;
-    scan_next_token();
+    {
+      tt = INTEGERTYPE;
+      ss << "R[" << *regnum << "] = " << ftoken.get_value() << ";//factor" << endl;
+      c->write_code(ss.str());
+      scan_next_token();
+      break;
+    case STRING:
+      tt=STRINGTYPE;
+      scan_next_token();
+    }
   }
   //cout << "parsed factor" << endl;
   debug("exit factor; tt is " , tt);
   return tt;
 }
 
-void parser::name_or_function_call(token t){
-  if(error_flag){return;}
+//returns ptr to register number holding array idx, if t is an array.
+//otherwise returns -1.
+int* parser::name_or_function_call(token t){
+  int* expressionreg = new int(-1);
+  if(error_flag){return expressionreg;}
   debug("enter name_or_function_call");
   switch(next_token->get_type()){
   case LBRACKET: //array
-    scan_next_token();
-    expression();
-    check_token_type(RBRACKET,"']'");
-    scan_next_token();
-    break;
-  case LPAREN: // function
-    if(!st->is_function(t)){
-      panic();
-      error_flag = true;
-      return;
-    }
-    scan_next_token();
-    string lblfunc = st->get_label(t);
-    string lblreturn = c->get_next_label();
-    stringstream ss;
-    cout << "t: " << t << endl
-	 << "ftoken: " << st->get_ftoken() << endl;
-    st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
-
-    st->set_offset(t,st->get_ardepth(st->get_ftoken())); // where the return value will be stored.
-    ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
-       << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
-       << "R[0] = R[1]; //set frame ptr to top of stk" << endl
-       << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
-       << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
-    if(next_token->get_type() == RPAREN){
+    {
+      if(!st->is_array(t)){
+	panic();
+	error_flag = true;
+	return expressionreg;
+      }
+      scan_next_token();
+      expressionreg = new int(c->get_next_free_reg());
+      c->use_reg(*expressionreg);
+      // do we need to check the type returned for the index expression?
+      // Should at least not be string...
+      expression(expressionreg);
+      check_token_type(RBRACKET,"']'");
       scan_next_token();
       break;
-    } 
-    //add_scope(t);
-    c->write_code(ss.str());
-    ss.clear();
-    ss.str("");
-    argument_list(t,0);
-    ss << "goto " << lblfunc << ";" << endl
-       << lblreturn << ": R[1] = R[0];" << endl
-       << "R[0] = MM[R[0]-1];" << endl;
-    c->write_code(ss.str());
-    //remove_scope();
-    check_token_type(RPAREN,"')'");
-    scan_next_token();
+    }
+  case LPAREN: // function
+    {
+      if(!st->is_function(t)){
+	panic();
+	error_flag = true;
+	return expressionreg;
+      }
+      scan_next_token();
+      string lblfunc = st->get_label(t);
+      string lblreturn = c->get_next_label();
+      stringstream ss;
+      cout << "t: " << t << endl
+	   << "ftoken: " << st->get_ftoken() << endl;
+      st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
+      
+      st->set_offset(t,st->get_ardepth(st->get_ftoken())); // where the return value will be stored.
+      ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
+	 << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
+	 << "R[0] = R[1]; //set frame ptr to top of stk" << endl
+	 << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
+	 << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
+      if(next_token->get_type() == RPAREN){
+	scan_next_token();
+	break;
+      } 
+      //add_scope(t);
+      c->write_code(ss.str());
+      ss.clear();
+      ss.str("");
+      argument_list(t,0);
+      ss << "goto " << lblfunc << ";" << endl
+	 << lblreturn << ": R[1] = R[0];" << endl
+	 << "R[0] = MM[R[0]-1];" << endl;
+      c->write_code(ss.str());
+      //remove_scope();
+      check_token_type(RPAREN,"')'");
+      scan_next_token();
+    }
   }
   debug("exit name_or_function_call");
+  return expressionreg;
 }
 void parser::argument_list(token t, int argnum){//,stringstream& ss){
   if(error_flag){return;}

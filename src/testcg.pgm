@@ -1,16 +1,12 @@
 integer function myfunction()
-  integer a;
-  integer function add(integer b, integer c)
-  begin
-    add := b + c;
-  end function;
-  integer function add10(integer c)
-  begin
-   add10 := c + 10;
-  end function;
+  integer i;
+  integer a[5];
 begin
-  a := 0;
-  a := add(2,5);
-  a := add10(7);
-  myfunction := a;
+  i := 1;
+  a[0] := 0;
+  while (i < 5)
+    a[i] := a[i-1] + 5;
+    i := i + 1;
+  end while;
+  myfunction := a[3];
 end function

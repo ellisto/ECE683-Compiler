@@ -58,7 +58,7 @@ class parser{
   void array_size();
   void statement();
   void assignment_statement();
-  int destination(stringstream&);
+  int destination(stringstream&, int*);
   void if_statement();
   void while_statement();
   void case_statement();
@@ -76,14 +76,9 @@ class parser{
   int relation2(stringstream&,int*);
   int term(int * regnum);
   int factor(int*);
-  void name_or_function_call(token);
-  //void argument_list(token, int,stringstream&);
+  int* name_or_function_call(token);
   void argument_list(token, int);
-  //  void number();
-  //void string();
-
-  /* void debug(const char* m); */
-  /* void debug(const char* m,int); */
+  
   
 };
 
