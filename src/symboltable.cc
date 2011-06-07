@@ -29,39 +29,47 @@ symboltable::symboltable(){
   token* t = add(token(ID, "getBool"));
   set_tokentype(*t,BOOLEANTYPE);
   set_function(*t,vector<pair<token*,int> >());
-
+  set_label(*t,"GETBOOL");
 
   t = add(token(ID, "getInt"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >());
+  set_label(*t,"GETINT");
 
   t = add(token(ID, "getString"));
   set_tokentype(*t,STRINGTYPE);
   set_function(*t,vector<pair<token*,int> >());
+  set_label(*t,"GETSTRING");
 
   t = add(token(ID, "putBool"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),BOOLEANTYPE)));
+  set_label(*t,"PUTBOOL");
 
   t = add(token(ID, "putInt"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),INTEGERTYPE)));
+  set_label(*t,"PUTINT");
 
   t = add(token(ID, "putString"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),STRINGTYPE)));
+  set_label(*t,"PUTSTRING");
 
   t = add(token(ID, "sqrt"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),INTEGERTYPE)));
+  set_label(*t,"SQRT");
 
   t = add(token(ID, "int2bool"));
   set_tokentype(*t,BOOLEANTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),INTEGERTYPE)));
+  set_label(*t,"INT2BOOL");
 
   t = add(token(ID, "bool2int"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),BOOLEANTYPE)));
+  set_label(*t,"BOOL2INT");
 
   /*  boolean getBool()
 
@@ -161,103 +169,103 @@ int symboltable::get_arraysize(token t){
 }
 
 void symboltable::set_function(token t, vector<pair<token*,int> > plist){
-    symboltableentry entry = *find_entry(t);
-    entry.set_function(plist);
-    increment_ardepth(t); //return value
-    //increment_ardepth(t); //return address
-    //cout << "set function " << *find_entry(t) << endl;
-  }
+  symboltableentry entry = *find_entry(t);
+  entry.set_function(plist);
+  increment_ardepth(t); //return value
+  //increment_ardepth(t); //return address
+  //cout << "set function " << *find_entry(t) << endl;
+}
 
-  void symboltable::set_function(token t, vector<pair<token*,int > > plist, map<int,pair<int,int> > arrayparams){
-      symboltableentry entry = *find_entry(t);
-      entry.set_function(plist,arrayparams);
-      increment_ardepth(t); //return value
-      //  increment_ardepth(t); //return address
-    }
+void symboltable::set_function(token t, vector<pair<token*,int > > plist, map<int,pair<int,int> > arrayparams){
+  symboltableentry entry = *find_entry(t);
+  entry.set_function(plist,arrayparams);
+  increment_ardepth(t); //return value
+  //  increment_ardepth(t); //return address
+}
 
-    bool symboltable::is_function(token t){
-      return find_entry(t)->is_function();
-    }
+bool symboltable::is_function(token t){
+  return find_entry(t)->is_function();
+}
     
-    vector<pair<token*,int> >* symboltable::get_parameterlist(token t){
-      return find_entry(t)->get_paramlist();
-    }
+vector<pair<token*,int> >* symboltable::get_parameterlist(token t){
+  return find_entry(t)->get_paramlist();
+}
 
-    map<int, pair<int,int> >* symboltable::get_arrayparams(token t){
-      return find_entry(t)->get_arrayparams();
-    }
+map<int, pair<int,int> >* symboltable::get_arrayparams(token t){
+  return find_entry(t)->get_arrayparams();
+}
 
-    void symboltable::set_label(token t,string lbl){
-      symboltableentry entry = *find_entry(t);
-      entry.set_label(lbl);
-      stringstream ss;
-      ss << "setting label for " << t << " to " << lbl <<endl;
-      debug(ss.str());
-    }
+void symboltable::set_label(token t,string lbl){
+  symboltableentry entry = *find_entry(t);
+  entry.set_label(lbl);
+  stringstream ss;
+  ss << "setting label for " << t << " to " << lbl <<endl;
+  debug(ss.str());
+}
 
-    string symboltable::get_label(token t){
-      symboltableentry entry = *find_entry(t);
-      string lbl = entry.get_label();
-      stringstream ss;
-      ss << "getting label for " << t << ":" << lbl <<endl;
-      debug(ss.str());
-      return lbl;
-    }
+string symboltable::get_label(token t){
+  symboltableentry entry = *find_entry(t);
+  string lbl = entry.get_label();
+  stringstream ss;
+  ss << "getting label for " << t << ":" << lbl <<endl;
+  debug(ss.str());
+  return lbl;
+}
 
-    symboltable * symboltable::get_prev(){
-      return prev;
-    }
+symboltable * symboltable::get_prev(){
+  return prev;
+}
 
-    void symboltable::increment_ardepth(token t){
-      symboltableentry entry = *find_entry(t);
-      entry.increment_ardepth();
-      stringstream ss;
-      ss <<"incrementing ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
-      debug(ss.str());
-    }
+void symboltable::increment_ardepth(token t){
+  symboltableentry entry = *find_entry(t);
+  entry.increment_ardepth();
+  stringstream ss;
+  ss <<"incrementing ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
+  debug(ss.str());
+}
 
-    void symboltable::set_ardepth(token t, int d){
-      symboltableentry entry = *find_entry(t);
-      entry.set_ardepth(d);
-      stringstream ss;
-      ss << "setting ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
-      debug(ss.str());
-    }
+void symboltable::set_ardepth(token t, int d){
+  symboltableentry entry = *find_entry(t);
+  entry.set_ardepth(d);
+  stringstream ss;
+  ss << "setting ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
+  debug(ss.str());
+}
 
-    int symboltable::get_ardepth(token t){
-      //cout << "token is" << t << endl;
-      symboltableentry entry = *find_entry(t);
-      return entry.get_ardepth();
-    }
+int symboltable::get_ardepth(token t){
+  //cout << "token is" << t << endl;
+  symboltableentry entry = *find_entry(t);
+  return entry.get_ardepth();
+}
 
-    void symboltable::set_offset(token t,int os){
-      symboltableentry entry = *find_entry(t);
-      stringstream ss;
-      ss << "setting offset for " << t << " to " << os << endl;
-      debug(ss.str());
-      entry.set_offset(os);
-    }
-    int symboltable::get_offset(token t){
-      symboltableentry entry = *find_entry(t);
-      return entry.get_offset();
-    }
+void symboltable::set_offset(token t,int os){
+  symboltableentry entry = *find_entry(t);
+  stringstream ss;
+  ss << "setting offset for " << t << " to " << os << endl;
+  debug(ss.str());
+  entry.set_offset(os);
+}
+int symboltable::get_offset(token t){
+  symboltableentry entry = *find_entry(t);
+  return entry.get_offset();
+}
 
-    token symboltable::get_ftoken(){
-      return *ftoken;
-    }
+token symboltable::get_ftoken(){
+  return *ftoken;
+}
 
-    void symboltable::set_ftoken(token t){
-      stringstream ss;
-      ss <<"setting ftoken to " << t << endl;
-      debug(ss.str());
-      ftoken = new token(t);
-      //increment_ardepth(t); //return value
-    }
+void symboltable::set_ftoken(token t){
+  stringstream ss;
+  ss <<"setting ftoken to " << t << endl;
+  debug(ss.str());
+  ftoken = new token(t);
+  //increment_ardepth(t); //return value
+}
 
-    ostream& operator<<(ostream& out, const symboltable& st){
-      out << "st at " << &st << endl;
-      for(unordered_set<symboltableentry>::const_iterator it = st.table.begin(); it != st.table.end(); it++){
-	cout << *it << endl;
-      }
-      return out;
-    }
+ostream& operator<<(ostream& out, const symboltable& st){
+  out << "st at " << &st << endl;
+  for(unordered_set<symboltableentry>::const_iterator it = st.table.begin(); it != st.table.end(); it++){
+    cout << *it << endl;
+  }
+  return out;
+}

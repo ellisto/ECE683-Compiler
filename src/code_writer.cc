@@ -54,6 +54,7 @@ void code_writer::init_generated_code(){
   if(generated_code.is_open()){
     generated_code << "#include \"" << code_defs_file << "\"" << endl
 		   << "#include \"" << std_defs_file << "\"" << endl
+		   << "#include \"runtime.h\"" << endl
 #ifdef DEBUG_REG
 		   << "#include <stdio.h>" << endl
 #endif
@@ -75,6 +76,35 @@ void code_writer::finalize_generated_code(){
 		   <<  "MM[R[0]+1] = &&end;" << endl
 		   <<  "R[1] = R[1]+2;" << endl
 		   <<  "goto L0;" << endl
+      // add hooks for runtime functions.
+		   << "GETBOOL: MM[R[0]] = getBool();" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "GETINT: MM[R[0]] = getInt();" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "GETSTRING: MM[R[0]] = getString();" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "PUTBOOL: MM[R[0]] = putBool(MM[R[0] + 2]);" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "PUTINT: MM[R[0]] = putInt(MM[R[0] + 2]);" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "PUTSTRING: MM[R[0]] = putString(MM[R[0] + 2]);" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "SQRT: MM[R[0]] = isqrt(MM[R[0] + 2]);" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "INT2BOOL: MM[R[0]] = int2bool(MM[R[0] + 2]);" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+		   << "BOOL2INT: MM[R[0]] = bool2int(MM[R[0] + 2]);" << endl
+		   << "R[2] = MM[R[0]+1];" << endl
+		   << "goto *R[2]; //write return statement" << endl
+      //end
 		   << "end: "
 #ifdef DEBUG_REG
 		   << "for(i = 0; i < MAX_USED_REGISTER; i++)" << endl

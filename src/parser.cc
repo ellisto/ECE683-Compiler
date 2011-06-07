@@ -929,10 +929,6 @@ int* parser::name_or_function_call(token t){
       
       st->set_offset(t,st->get_ardepth(st->get_ftoken())); // where the return value will be stored.
       
-      if(next_token->get_type() == RPAREN){
-	scan_next_token();
-	break;
-      } 
       //add_scope(t);
 
       //ss.clear();
@@ -943,7 +939,9 @@ int* parser::name_or_function_call(token t){
 	 << "R[0] = R[1]; //set frame ptr to top of stk" << endl
 	 << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
 	 << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
-      argument_list(t,0,2,ss); //initial offset of 2
+      if(next_token->get_type() != RPAREN){
+	argument_list(t,0,2,ss); //initial offset of 2
+      }
       ss << "goto " << lblfunc << ";" << endl
 	 << lblreturn << ": R[1] = R[0];" << endl
 	 << "R[0] = MM[R[0]-1];" << endl;

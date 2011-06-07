@@ -52,7 +52,7 @@ int main(int argc, char * argv[]){
   cout << endl << endl;
   system(string("cat " + c.get_gen_filename()).c_str());
   cout << endl << endl;
-  system(string("gcc -g " + c.get_gen_filename()).c_str());
+  system(string("gcc -g -static " + c.get_gen_filename() + " -L. -lruntime -lm").c_str());
   cout << endl << endl;
 
   //test generated code
