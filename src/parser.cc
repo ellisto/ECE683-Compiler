@@ -283,11 +283,7 @@ void parser::variable_declaration(int tm){
   token varid = *next_token;
   identifier(tm);
   varid = *st->add(varid); // add to current scope if not already there
-  if(tm == INTEGERTYPE || tm == BOOLEANTYPE){
-    c->write_code("R[1] = R[1]+1; //allocate space for var " + varid.get_value() + '\n');
-    st->set_offset(varid,st->get_ardepth(st->get_ftoken()));
-    st->increment_ardepth(st->get_ftoken());
-  }//TODO: add allocations for strings, arrays
+  
 
   if(next_token->get_type() == LBRACKET){
     check_token_type(LBRACKET,"'['");
@@ -299,6 +295,23 @@ void parser::variable_declaration(int tm){
     check_token_type(RBRACKET,"']'");
     scan_next_token();  
   }
+
+  //allocate memory for variable
+  stringstream ss;
+  token ftoken = st->get_ftoken();
+  int ardepth = st->get_ardepth(ftoken);
+  st->set_offset(varid,ardepth);
+
+  if(st->is_array(varid)){
+    int arraysize = st->get_arraysize(varid);
+    ss << "R[1] = R[1] + " << arraysize << "; // allocate space for array " 
+       << varid.get_value() << endl;
+    st->set_ardepth(ftoken, ardepth + arraysize);
+  }else if(tm == INTEGERTYPE || tm == BOOLEANTYPE){
+    ss << "R[1] = R[1] + 1; //allocate space for var" << varid.get_value() << endl;
+    st->increment_ardepth(ftoken);
+  }//TODO: add allocations for strings
+  c->write_code(ss.str());
   debug("exit variable_declaration");
 }
 int parser::type_mark(){
