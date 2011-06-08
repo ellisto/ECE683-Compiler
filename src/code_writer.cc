@@ -107,11 +107,14 @@ void code_writer::finalize_generated_code(){
       //end
 		   << "end: "
 #ifdef DEBUG_REG
+		   << "printf(\"\\n\");" << endl
 		   << "for(i = 0; i < MAX_USED_REGISTER; i++)" << endl
       		   << "printf(\"R[%d] = %d\\n\",i,R[i]);" <<endl
 		   << "printf(\"\\n\\n\");" << endl
 		   << "for(i = 0; i < 20; i++)" << endl
-		   << "printf(\"MM[%d] = %d\\n\",i,MM[i]);" <<endl
+		   << "printf(\"MM[%d] = %d\\t\\t MM[%d] = %d\\n\",i,MM[i],MM_SIZE - 1 - i, MM[MM_SIZE - 1 - i]);" <<endl
+      //<< "for(i = MM_SIZE - 1; i > MM_SIZE - 20; i--)" << endl
+      //	   << "printf(\"MM[%d] = %d\\n\",i,MM[i]);" <<endl
 #endif
 		   << " return 0;" << endl
 		   << " }" << endl;

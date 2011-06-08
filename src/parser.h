@@ -22,6 +22,7 @@ class parser{
   token * next_token;
   code_writer * c;
   bool error_flag;
+  bool ever_error;
   //  int next_type;
  public:
   //constructors

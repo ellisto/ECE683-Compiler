@@ -12,6 +12,7 @@ parser::parser(){
   this->st = new symboltable(); // global scope
   this->s = new scanner(*l,*st);
   error_flag=false;
+  ever_error = false;
 }
 
 parser::parser(scanner& s,line_counter& l,symboltable& st, code_writer& c){
@@ -20,6 +21,7 @@ parser::parser(scanner& s,line_counter& l,symboltable& st, code_writer& c){
   this->st = &st;
   this->c = &c;
   error_flag=false;
+  ever_error = false;
   this->next_token = new token(this->s->scan());
 }
 
@@ -29,6 +31,9 @@ void parser::attach_scanner(scanner&s){
 }
 
 void parser::reset_error(){
+  if(error_flag){
+    ever_error = true;
+  }
   error_flag= false;
 }
 
@@ -42,7 +47,8 @@ bool parser::parse(){
   st->set_ftoken(globaltoken);
   //  st->increment_ardepth(st->get_ftoken());
   function_declaration(tm);
-  return !error_flag;
+  //return !error_flag;
+  return !ever_error;
 }
 
 void parser::scan_next_token(){
@@ -71,8 +77,11 @@ bool parser::check_types(int type1, int type2){
   if(type1 == type2){
     return true;
   }else{
-    if(type1 >= 0 && type2 >= 0)
+    if(type1 >= 0 && type2 >= 0){
+      cout << "type 1: " << type1 << "\t type2: " << type2 <<endl;
       report_error("Type mismatch ", l->get_linenumber());
+      error_flag = true;
+    }
     return false;
   }
 }
@@ -81,6 +90,7 @@ bool parser::check_array_sizes(int s1, int s2){
     return true;
   }else{
     report_error("Array size mismatch ", l->get_linenumber());
+    error_flag = true;
     return false;
   }
 }
@@ -196,7 +206,9 @@ pair<int,token> parser::parameter(){
   int tm = type_mark();
   token paramname = *next_token;
   //variable_declaration(tm);
-  identifier(tm);
+  //identifier(tm);
+  check_token_type(ID,"identifier");
+  scan_next_token();
   
   if(next_token->get_type() == LBRACKET){
     check_token_type(LBRACKET,"'['");
@@ -224,6 +236,9 @@ void parser::function_body(token ftoken){
   for(vector<pair<token*,int> >::iterator it = plist.begin(); it != plist.end(); it++){
     int tt = it->second;
     token argtok = *(it->first);
+    //add arg to symbol table
+    argtok = *st->add(argtok);
+    st->set_tokentype(argtok,tt);
     st->set_offset(argtok,st->get_ardepth(st->get_ftoken()));
     if(tt == ARRAYTYPE){
       int arraysize = st->get_arraysize(argtok);
@@ -231,7 +246,6 @@ void parser::function_body(token ftoken){
 	 << argtok.get_value()  << endl;
       st->set_ardepth(st->get_ftoken(),st->get_ardepth(st->get_ftoken()) + arraysize);
     }else if(tt == INTEGERTYPE || tt == BOOLEANTYPE || tt == STRINGTYPE){
-      cout <<"DO I GET HERE!?" << endl;
       ss << "R[1] = R[1] + 1; //allocate space for arg " << argtok.get_value()  << endl;
       st->increment_ardepth(st->get_ftoken());
     }
@@ -603,9 +617,12 @@ int parser::identifier(int typemark){
   if(typemark >=0){
     st->set_tokentype(*next_token,typemark);
   }
+  //cout << *st << endl;
   int tt = st->get_tokentype(*next_token);
   if( tt < 0){
     report_error("Undeclared function or variable: " + next_token->get_value(), l->get_linenumber());
+    cout << *st << endl;
+    
     panic();
     error_flag = true;
   }
@@ -624,7 +641,6 @@ int parser::expression(int* reg){
   bool neg = false;
 
   if(next_token->get_type() == NOT){
-    tt = BOOLEANTYPE;
     neg = true;
     scan_next_token();
   }
@@ -634,12 +650,18 @@ int parser::expression(int* reg){
   int tt2 = expression2(ss2);
 
   if(tt2>=0){
+    // if there's a tt2 then there was a logical operator, thus type
+    // must be bool.
+    check_types(tt,BOOLEANTYPE);
     check_types(tt,tt2);
     ss << "R[" << *reg << "] = R[" << *reg << "] " << ss2.str() << "; //expression" << endl;  
-    if(neg)
-      ss << "R[" << *reg << "] = !R[" << *reg << "];//expression" << endl;
-    c->write_code(ss.str());
+  }  
+  if(neg){
+    check_types(tt,BOOLEANTYPE);
+    ss << "R[" << *reg << "] = !R[" << *reg << "];//expression" << endl;
   }
+  c->write_code(ss.str());
+  
   
   debug("exit expression; tt is " , tt);
   return tt;
@@ -698,6 +720,9 @@ int parser::arithOp(int * regnum){
 
 
   if(tt2 >=0){
+    // arith ops defined only on ints so must force check that they
+    // are both ints.
+    check_types(tt,INTEGERTYPE);
     check_types(tt,tt2);
     ss << "R[" << *regnum << "] = R[" << *regnum << "]" << ss2.str() << "; //arithop1" << endl;
   }
@@ -771,6 +796,10 @@ int parser::relation(int * regnum){
     check_types(tt,tt2);
     ss << "R[" << *regnum << "] = R[" << *regnum << "]" << ss2.str() << "; //relation " << endl;
     c->write_code(ss.str());
+    // relation ops are defined for any two operands, as long as they
+    // are same type, but the op always returns bool; if in this
+    // block, there is an op, so make the return type bool.
+    tt = BOOLEANTYPE;
   }
   debug("exit relation; tt is " , tt);
   return tt;
@@ -823,6 +852,8 @@ int parser::term(int * regnum){
     tt2 = term(reg2);
   }
   if(tt2 >=0){
+    //only defined for ints
+    check_types(tt,INTEGERTYPE);
     check_types(tt,tt2);
     stringstream ss;
     ss << "R[" << *regnum << "] = " << "R[" << *regnum << "]";
@@ -925,9 +956,6 @@ int* parser::name_or_function_call(token t){
       string lblfunc = st->get_label(t);
       string lblreturn = c->get_next_label();
       stringstream ss;
-      cout << "t: " << t << endl
-	   << "ftoken: " << st->get_ftoken() << endl
-	   << "ardepth: " << st->get_ardepth(st->get_ftoken()) << endl;
       
       st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
       
@@ -982,6 +1010,7 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
       isarray = true;
     }
 
+    //    cout << "tt1: " << tt1 << "\t tt2: " << tt2 << endl ; 
     if(check_types(tt1,tt2)){//if types are right, add arg to symbol table
       token argtok = *st->add(*(plist[argnum].first)); 
       if(isarray){

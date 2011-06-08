@@ -1,15 +1,4 @@
 integer function myfunction()
-//  integer i;
-  integer function s()
-   begin
-    s:=15;
-   end function;
-  integer function t(integer b)
-   begin
-        b := b + 1;
-	t := s();
-   end function;
 begin
- // i := 4;
-  myfunction := t(1);
+  myfunction := putString("herp derp");
 end function

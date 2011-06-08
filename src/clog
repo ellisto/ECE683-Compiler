@@ -1,0 +1,6 @@
+generated_code.c: In function ‘main’:
+generated_code.c:27: warning: assignment makes integer from pointer without a cast
+generated_code.c:43: warning: assignment makes integer from pointer without a cast
+generated_code.c:55: warning: assignment makes integer from pointer without a cast
+generated_code.c:65: warning: assignment makes integer from pointer without a cast
+generated_code.c:77: warning: assignment makes integer from pointer without a cast

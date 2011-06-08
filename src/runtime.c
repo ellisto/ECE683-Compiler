@@ -34,21 +34,22 @@ int getString(){
 }
   
 int putBool(int b){
-  printf("%d",b);
+  printf("%d\n",b);
   return 0;
 }
 
 int putInt(int n){
-  printf("%d",n);
+  printf("%d\n",n);
   return 0;
 }
 
 int putString(int straddr){
   //look up string in string table, print it out.
   int i = straddr;
-  while(MM[i]!='\0'){
-    printf("%c",MM[i]);
+  while(MM[i] != '\0'){
+    printf("%c",MM[i--]);
   }
+  printf("\n");
   return 0;
 }
 
