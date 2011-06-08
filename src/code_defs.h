@@ -1,2 +1,2 @@
-#define MAX_USED_REGISTER 5
+#define MAX_USED_REGISTER 7
 #define MM_SIZE 10000

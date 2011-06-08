@@ -6,9 +6,10 @@ integer function myfunction()
    end function;
   integer function t(integer b)
    begin
+        b := b + 1;
 	t := s();
    end function;
 begin
  // i := 4;
-  myfunction := t(i);
+  myfunction := t(1);
 end function

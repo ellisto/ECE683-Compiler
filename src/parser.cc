@@ -231,10 +231,12 @@ void parser::function_body(token ftoken){
 	 << argtok.get_value()  << endl;
       st->set_ardepth(st->get_ftoken(),st->get_ardepth(st->get_ftoken()) + arraysize);
     }else if(tt == INTEGERTYPE || tt == BOOLEANTYPE || tt == STRINGTYPE){
+      cout <<"DO I GET HERE!?" << endl;
       ss << "R[1] = R[1] + 1; //allocate space for arg " << argtok.get_value()  << endl;
       st->increment_ardepth(st->get_ftoken());
     }
   }
+  c->write_code(ss.str());
   debug("done adding parameters to st");
 
   bool returned = false;
@@ -924,7 +926,9 @@ int* parser::name_or_function_call(token t){
       string lblreturn = c->get_next_label();
       stringstream ss;
       cout << "t: " << t << endl
-	   << "ftoken: " << st->get_ftoken() << endl;
+	   << "ftoken: " << st->get_ftoken() << endl
+	   << "ardepth: " << st->get_ardepth(st->get_ftoken()) << endl;
+      
       st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
       
       st->set_offset(t,st->get_ardepth(st->get_ftoken())); // where the return value will be stored.
