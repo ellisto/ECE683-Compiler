@@ -1,0 +1,26 @@
+//validation program 4
+//functions
+
+boolean function main(integer par)
+    integer var;	
+    boolean bar;
+    boolean true;
+    boolean false;
+    string  sar;
+    integer tmp;		
+    
+    begin 	
+    true := (1==1);
+    false := (1 != 1);	
+    tmp := putString("__runtime library__");
+    var := 16;
+    tmp := putBool(sqrt(16) == 4);
+    tmp := putBool(int2bool(0) == false);
+    tmp := putBool(int2bool(25) == true);
+    tmp := putBool(int2bool(0-25) == true);
+    tmp := putBool(bool2int(false) == 0);
+    tmp := putBool(bool2int(true) == 1);
+    tmp := putBool(bool2int(int2bool(33)) == 1);
+    tmp := putBool(bool2int(int2bool(0)) == 0);
+    main := 1 == 1; 
+end function

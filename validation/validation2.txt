@@ -1,0 +1,186 @@
+//validation program 2
+//validate statements and arrays
+
+boolean function main(integer par)
+	integer var;	
+	boolean bar;
+	boolean true;
+	boolean false;
+	string  sar;
+	integer tmp;	
+        integer array1[10];
+        integer array2[10];
+  
+	begin 	
+	true := (1==1);
+    false := (1 != 1);
+	
+    tmp := putString("__assignment statement__");
+	var := 10;
+	tmp := putBool(var == 10);
+	tmp := 22;
+	var := tmp;
+	tmp := putBool(var == 22);
+	par := 74;
+	var := par;
+	tmp := putBool(var == 74);
+	bar := true;
+	tmp := putBool(true);	
+	
+	sar := "__if statement__";
+	tmp := putString(sar);
+	bar := false;
+	if 1 == 1 then
+		bar := true;
+	end if;	
+	tmp := putBool(bar);
+    if true then
+		tmp := putBool(true);
+	else 	
+		tmp := putBool(false);
+	end if;	
+    if not true then
+		tmp := putBool(false);
+	else 	
+		tmp := putBool(true);
+	end if;	
+	var := 0;
+    if 6 > 22 then
+		var := var + 2;
+		var := var + 3;
+		var := var + 4;
+	else 	
+		var := var + 10;
+		var := var + 100;
+		var := var + 1000;
+	end if;			
+    tmp := putBool(var == 1110);    
+	var := 0;
+    if true then
+        if false then
+    	    var := var + 1;
+		else
+            if true then
+                if true then
+                    var := var + 10; //this one
+                else
+                    var := var + 100;
+				end if;	
+            end if;
+        end if;
+    end if;		
+	tmp := putBool(var == 10);
+	
+	tmp := putString("__while statement__");
+	var := 10;
+	while var > 0
+	    var := var - 1;
+	end while;
+	tmp := putBool(var == 0);
+	tmp := 1;
+	var := 0;
+	while tmp < 11
+	    var := var + tmp;		
+		tmp := tmp + 1;
+	end while; 
+    tmp := putBool(var == 55);
+	var := 0;
+	par := 0;
+	tmp := 0;
+    while tmp < 4	
+		par := tmp;
+	    while par < 5
+	        var := var + 1;	//5 + 4 + 3 + 2 = 14	
+		    par := par + 1;
+	    end while; 
+		par := 0;
+		while par < 5
+	        var := var + 1; //5*4 = 20		
+		    par := par + 1;
+	    end while; 
+		tmp := tmp + 1; 
+	end while; 	
+    tmp := putBool(var == 34); 
+	
+	tmp := putString("__case statement__");
+    tmp := 9;
+	var := 0;
+	case tmp is
+		when 3 then
+			var := var + 1;
+		when 9 then
+			var := var + 10; //this one
+		when 11 then
+			var := var + 100;
+	end case;		
+	tmp := putBool(var == 10);
+    var := 0;	
+	case 11 is
+		when 3 then
+			var := var + 1;
+		when 9 then
+			var := var + 10; //this one
+		when 11 then
+			var := var + 100;
+		default then
+			var := var + 1000;
+	end case;	
+	tmp := putBool(var == 100);
+    var := 0;	
+	case (0-12) is
+		when 3 then
+			var := var + 1;
+		when 9 then
+			var := var + 10; //this one
+		when 11 then
+			var := var + 100;
+		default then
+			var := var + 1000;
+	end case;	
+	tmp := putBool(var == 1000);
+    var := 0;	
+	case 11 is
+		when 3 then
+			var := var + 1;
+		when 9 then
+			var := var + 10; //this one
+		when 11 then
+			var := var + 100; //this one
+			case var is
+				when 77 then
+					var := var + 22;
+				when 100 then
+					var := var + 33; //this one
+					case var is
+						when 0 then
+							var := var + 123;
+						default then
+							var := var + 2000; //this one
+						end case;	
+				when 10 then
+					var := var + 44;
+				default then
+					var := var + 44;
+				end case;
+		default then
+			var := var + 1000;
+	end case;	
+	tmp := putBool(var == 2133); 
+
+        tmp := putString("__arrays__");
+        array1[0] := 5;
+        tmp := putBool(array1[0] == 5);
+        array1[6] := 8;  
+        tmp := putBool(array1[0]*array1[6] == 40);
+        array1[7] := 9;  
+        array1[8] := 10;  
+        array2[0] := 100; 
+        array2[6] := 200; 
+        array2[7] := 300; 
+        array2[9] := 400; 
+        array2 := array1;
+        tmp := putBool(array2[8] == 10);
+        array1 := array2;
+        tmp := putBool(array1[7] == 9);        
+	main := 1 == 1; 
+end function

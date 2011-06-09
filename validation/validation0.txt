@@ -1,0 +1,37 @@
+//validation program 0
+//I/O validation
+
+integer function main()
+    integer var;	
+    boolean bar;
+    string  sar;
+    integer tmp;	
+    begin 	
+    tmp := putString("Runtime validation");	
+    tmp := putString("__basic io__");    
+    tmp := putString("enter true boolean");   
+    bar := getBool();
+    tmp := putString("got");
+    tmp := putBool(bar);
+    tmp := putString("enter false boolean");   
+    bar := getBool();
+    tmp := putString("got");
+    tmp := putBool(bar);
+    tmp := putString("enter positive integer");   
+    var := getInt();
+    tmp := putString("got");
+    tmp := putInt(var);
+    tmp := putString("enter zero integer");   
+    var := getInt();
+    tmp := putString("got");
+    tmp := putInt(var);
+    tmp := putString("enter negative integer");   
+    var := getInt();
+    tmp := putString("got");
+    tmp := putInt(var);
+    tmp := putString("enter string");   
+    sar := getString();
+    tmp := putString("got");
+    tmp := putString(sar);   
+    main := 1; 
+end function

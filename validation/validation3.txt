@@ -1,0 +1,163 @@
+//validation program 3
+//functions
+
+boolean function main(integer par)
+	integer var;	
+	boolean bar;
+	boolean true;
+	boolean false;
+	string  sar;
+	integer tmp;	
+        integer array[10];
+	
+	integer function get3()
+		begin		
+		get3 := 3;
+	end function;
+	
+	integer function increment(integer i)
+		begin
+		i := i + 1;
+		increment := i;
+	end function;	
+	
+	integer function add(integer i, integer j)
+		begin		
+		add := i + j;
+	end function;
+
+    integer function incrementVar()
+		begin
+		var := var + 1;	
+		incrementVar := 0;
+	end function;	
+	
+	integer function get123nest()
+	    integer sum;
+		integer dum;
+		integer function add100()
+		    integer function add20()
+			    integer function add3()
+				    begin
+					sum := sum + 3;
+					add3 := 0;
+				end function;
+				begin
+				dum := add3();
+				sum := sum + 20;
+				add20 := 0;
+			end function;
+			begin			
+			sum := sum + 100;
+			dum := add20();
+			add100 := 0;
+		end function;
+		begin
+		sum := 0;
+		dum := add100();
+		get123nest := sum;
+	end function;	
+ 	
+    integer function inc3nest(integer par)		
+		integer function incA(integer par)
+		    integer var;
+			integer function incB(integer par)
+				begin
+				par := par + 1;
+				incB := par;
+			end function;
+            begin
+			var := par;
+			var := incB(var);
+			par := var + 1;
+			incA := par;
+		end function;
+		begin
+		par := incA(par);
+		par := par + 1;
+		inc3nest := par;
+	end function;	
+   
+        integer function getValue(integer inArray[10], integer index)
+		begin
+		getValue := inArray[index];
+	end function;
+
+        integer function overwrite(integer inArray[10])
+		begin
+                inArray[0] := 123;
+		overwrite := 0;
+	end function;
+	
+	integer function recCount(integer i)		
+		begin		
+		if i > 0 then
+			recCount := 1 + recCount(i - 1);
+		else
+			recCount := 0;
+		end if;
+	end function;	
+	
+	integer function sillyFib(integer i)
+		begin
+		case i is
+			when 1 then 
+				sillyFib := 1;
+			when 2 then
+				sillyFib := 1;
+			default then
+				sillyFib := sillyFib(i - 1) + sillyFib(i - 2);
+		end case;
+    end function;	
+
+	integer function callCount(integer x)
+		integer count;
+		integer function recCountNest(integer i)		
+			integer function recInc(integer j)
+				begin
+				count := count + 1;
+				if j > 0 then
+					recInc := recInc(j - 1) + 1;
+				else
+					recInc := 1;
+				end if;	
+			end function;
+			begin
+			if i > 0 then
+				recCountNest := recInc(recCountNest(i-1));
+			else
+				recCountNest := 0;
+			end if;				
+		end function;
+		begin
+		count := 0;
+		x := recCountNest(x);
+		callCount := count;
+	end function;		
+		
+	begin 	
+	
+	true := (1==1);
+    false := (1 != 1);
+	
+    tmp := putString("__function calls__");
+	tmp := putBool(get3() == 3);
+	tmp := putBool(increment(9) == 10);
+	tmp := putBool(add(10,100) == 110);
+	var := 11;
+	tmp := incrementVar();
+	tmp := putBool(var == 12);
+	tmp := putBool(123 == get123nest());
+	tmp := putBool(inc3nest(10) == 13);
+        array[6] := 88;
+        tmp := putBool(getValue(array, 6) == 88);
+        array[0] := 56;
+        tmp := overwrite(array);
+	tmp := putBool(array[0] == 56);
+	tmp := putString("__recursion__");
+	tmp := putBool(recCount(8) == 8);	
+	tmp := putBool(sillyFib(12) == 144);
+	tmp := putBool(callCount(10) == 55);			
+	
+	main := 1 == 1; 
+end function

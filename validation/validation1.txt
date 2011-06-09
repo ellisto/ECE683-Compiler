@@ -1,0 +1,70 @@
+//validation program 1
+//validate basic math
+
+boolean function main()
+	integer var;	
+	boolean bar;
+	boolean true;
+	boolean false;
+	string  sar;
+	integer tmp;	
+        
+	begin 	
+	
+	
+    tmp := putString("__expression operations__");
+    true := (1==1);
+    false := (1 != 1); 	
+    bar := not false; 
+	tmp := putBool(bar);
+	bar := true and true; 
+	tmp := putBool(bar);
+	bar := true or false; 
+	tmp := putBool(bar);
+    bar := not (false or (false and true));	
+	tmp := putBool(bar);
+	
+	tmp := putString("__arithmetic operations__");
+	bar := (9 + 12) == 21;
+	tmp := putBool(bar);
+	bar := (0 - 15 + 5) == (0 - 10);
+	tmp := putBool(bar);
+	bar := (26 - 8) == 18;
+	tmp := putBool(bar);
+	bar := (8 | 4) == 12;
+	tmp := putBool(bar);
+	bar := (31 & 12) == 12;
+	tmp := putBool(bar);
+	
+	tmp := putString("__relation operations__");
+	bar := (1 == 1);
+	tmp := putBool(bar);
+	bar := (true == true);
+	tmp := putBool(bar);
+	bar := (7 != 1);
+	tmp := putBool(bar);
+	bar := (false != true);
+	tmp := putBool(bar);
+	bar := (7 > 3);
+	tmp := putBool(bar);
+	bar := (9 < 22);
+	tmp := putBool(bar);
+	
+	tmp := putString("__factor operations__");
+	bar := 5*7 == 35;
+	tmp := putBool(bar);
+	bar := 2*2*3*4 == 3*4*2*2;
+	tmp := putBool(bar);
+        bar := 8/2*4/2 == 8;
+	tmp := putBool(bar);
+	bar := (0-3)*(0-8) == 24;
+	tmp := putBool(bar);
+	bar := 21/3 == 7;
+	tmp := putBool(bar);
+	bar := 18/(0-2) == (0-9);
+	tmp := putBool(bar);
+	bar := (0-9)/3 == (0-3);
+	tmp := putBool(bar);       
+	
+	main := 1 == 1; 
+end function
