@@ -460,8 +460,11 @@ void parser::if_statement(){
   c->use_reg(*reg);
   
   expression(reg);
-  ss << "R[" << *reg <<"] = !R[" << *reg <<"]; //if" << endl;
+
   lblelse = c->get_next_label();
+  lblend = c->get_next_label();
+
+  ss << "R[" << *reg <<"] = !R[" << *reg <<"]; //if" << endl;
   ss << "if(R[" << *reg <<"]) goto " << lblelse << "; //if" << endl;
 
   check_token_type(THEN,"'then'");
@@ -474,10 +477,12 @@ void parser::if_statement(){
     reset_error();
     scan_next_token();
   }while(next_token->get_type()!=ELSE && next_token->get_type()!=END && next_token->get_type()!=EOFMARKER  );
-  c->write_code(lblelse + ": ");
+  ss.str(""); // clear the stringstream
+  ss << "goto " << lblend << "; //if" << endl
+     << lblelse << ": ";
+  c->write_code(ss.str());
   if(next_token->get_type() == ELSE){
     scan_next_token();
-    lblend = c->get_next_label();
     ss.str(""); // clear the stringstream
     ss << "R[" << *reg <<"] = !R[" << *reg <<"]; //if" << endl;
     ss << "if(R[" << *reg <<"]) goto " << lblend << "; //if" << endl;
@@ -489,8 +494,8 @@ void parser::if_statement(){
       reset_error();
       scan_next_token();
     }while(next_token->get_type()!=END && next_token->get_type()!=EOFMARKER );
-    c->write_code(lblend + ": ");
   }
+  c->write_code(lblend + ": ");
   
   c->free_reg(*reg);
   check_token_type(END,"'end'");
