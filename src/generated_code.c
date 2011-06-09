@@ -423,159 +423,159 @@ R[3] = MM[R[0] + 27];//factor putString
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 5;//factor
 R[4] = 7;//factor
-R[3] = R[3] * R[4]; //term
-R[5] = 35;//factor
-R[3] = R[3] == R[5]; //relation 
+R[3] = R[3] * R[4]; //term 2
+R[4] = 35;//factor
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 3] = R[3]; //assignment_statement
-R[5] = MM[R[0] + 3];//factor bar
+R[4] = MM[R[0] + 3];//factor bar
 MM[R[1]] = R[0]; //store old frame ptr
 R[1] = R[1] + 1; //incrementing frm ptr storage 
 R[0] = R[1]; //set frame ptr to top of stk
 MM[R[0] + 1] = &&L21;
 R[1] = R[1] + 2; //leave room for return value and address
-MM[R[0] + 2] = R[5]; //passing argument 
+MM[R[0] + 2] = R[4]; //passing argument 
 goto PUTBOOL;
 L21: R[1] = R[0];
 R[0] = MM[R[0]-1];
 R[3] = MM[R[0] + 28];//factor putBool
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 2;//factor
-R[5] = 2;//factor
-R[6] = 3;//factor
-R[7] = 4;//factor
-R[6] = R[6] * R[7]; //term
-R[5] = R[5] * R[6]; //term
-R[3] = R[3] * R[5]; //term
-R[8] = 3;//factor
-R[9] = 4;//factor
-R[10] = 2;//factor
-R[11] = 2;//factor
-R[10] = R[10] * R[11]; //term
-R[9] = R[9] * R[10]; //term
-R[8] = R[8] * R[9]; //term
-R[3] = R[3] == R[8]; //relation 
+R[4] = 2;//factor
+R[5] = 3;//factor
+R[6] = 4;//factor
+R[3] = R[3] * R[4]; //term 2
+R[3] = R[3] * R[5]; //term 2
+R[3] = R[3] * R[6]; //term 2
+R[4] = 3;//factor
+R[5] = 4;//factor
+R[6] = 2;//factor
+R[7] = 2;//factor
+R[4] = R[4] * R[5]; //term 2
+R[4] = R[4] * R[6]; //term 2
+R[4] = R[4] * R[7]; //term 2
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 3] = R[3]; //assignment_statement
-R[8] = MM[R[0] + 3];//factor bar
+R[4] = MM[R[0] + 3];//factor bar
 MM[R[1]] = R[0]; //store old frame ptr
 R[1] = R[1] + 1; //incrementing frm ptr storage 
 R[0] = R[1]; //set frame ptr to top of stk
 MM[R[0] + 1] = &&L22;
 R[1] = R[1] + 2; //leave room for return value and address
-MM[R[0] + 2] = R[8]; //passing argument 
+MM[R[0] + 2] = R[4]; //passing argument 
 goto PUTBOOL;
 L22: R[1] = R[0];
 R[0] = MM[R[0]-1];
 R[3] = MM[R[0] + 29];//factor putBool
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 8;//factor
-R[8] = 2;//factor
-R[12] = 4;//factor
-R[13] = 2;//factor
-R[12] = R[12] / R[13]; //term
-R[8] = R[8] * R[12]; //term
-R[3] = R[3] / R[8]; //term
-R[14] = 8;//factor
-R[3] = R[3] == R[14]; //relation 
+R[4] = 2;//factor
+R[5] = 4;//factor
+R[6] = 2;//factor
+R[3] = R[3] / R[4]; //term 2
+R[3] = R[3] * R[5]; //term 2
+R[3] = R[3] / R[6]; //term 2
+R[4] = 8;//factor
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 3] = R[3]; //assignment_statement
-R[14] = MM[R[0] + 3];//factor bar
+R[4] = MM[R[0] + 3];//factor bar
 MM[R[1]] = R[0]; //store old frame ptr
 R[1] = R[1] + 1; //incrementing frm ptr storage 
 R[0] = R[1]; //set frame ptr to top of stk
 MM[R[0] + 1] = &&L23;
 R[1] = R[1] + 2; //leave room for return value and address
-MM[R[0] + 2] = R[14]; //passing argument 
+MM[R[0] + 2] = R[4]; //passing argument 
 goto PUTBOOL;
 L23: R[1] = R[0];
 R[0] = MM[R[0]-1];
 R[3] = MM[R[0] + 30];//factor putBool
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 0;//factor
-R[14] = 3;//factor
-R[3] = R[3] - R[14]; //arithop 2
-R[14] = 0;//factor
-R[15] = 8;//factor
-R[14] = R[14] - R[15]; //arithop 2
-R[3] = R[3] * R[14]; //term
-R[15] = 24;//factor
-R[3] = R[3] == R[15]; //relation 
+R[4] = 3;//factor
+R[3] = R[3] - R[4]; //arithop 2
+R[4] = 0;//factor
+R[5] = 8;//factor
+R[4] = R[4] - R[5]; //arithop 2
+R[3] = R[3] * R[4]; //term 2
+R[4] = 24;//factor
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 3] = R[3]; //assignment_statement
-R[15] = MM[R[0] + 3];//factor bar
+R[4] = MM[R[0] + 3];//factor bar
 MM[R[1]] = R[0]; //store old frame ptr
 R[1] = R[1] + 1; //incrementing frm ptr storage 
 R[0] = R[1]; //set frame ptr to top of stk
 MM[R[0] + 1] = &&L24;
 R[1] = R[1] + 2; //leave room for return value and address
-MM[R[0] + 2] = R[15]; //passing argument 
+MM[R[0] + 2] = R[4]; //passing argument 
 goto PUTBOOL;
 L24: R[1] = R[0];
 R[0] = MM[R[0]-1];
 R[3] = MM[R[0] + 31];//factor putBool
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 21;//factor
-R[15] = 3;//factor
-R[3] = R[3] / R[15]; //term
-R[16] = 7;//factor
-R[3] = R[3] == R[16]; //relation 
+R[4] = 3;//factor
+R[3] = R[3] / R[4]; //term 2
+R[4] = 7;//factor
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 3] = R[3]; //assignment_statement
-R[16] = MM[R[0] + 3];//factor bar
+R[4] = MM[R[0] + 3];//factor bar
 MM[R[1]] = R[0]; //store old frame ptr
 R[1] = R[1] + 1; //incrementing frm ptr storage 
 R[0] = R[1]; //set frame ptr to top of stk
 MM[R[0] + 1] = &&L25;
 R[1] = R[1] + 2; //leave room for return value and address
-MM[R[0] + 2] = R[16]; //passing argument 
+MM[R[0] + 2] = R[4]; //passing argument 
 goto PUTBOOL;
 L25: R[1] = R[0];
 R[0] = MM[R[0]-1];
 R[3] = MM[R[0] + 32];//factor putBool
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 18;//factor
-R[16] = 0;//factor
-R[17] = 2;//factor
-R[16] = R[16] - R[17]; //arithop 2
-R[3] = R[3] / R[16]; //term
-R[17] = 0;//factor
-R[18] = 9;//factor
-R[17] = R[17] - R[18]; //arithop 2
-R[3] = R[3] == R[17]; //relation 
+R[4] = 0;//factor
+R[5] = 2;//factor
+R[4] = R[4] - R[5]; //arithop 2
+R[3] = R[3] / R[4]; //term 2
+R[4] = 0;//factor
+R[5] = 9;//factor
+R[4] = R[4] - R[5]; //arithop 2
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 3] = R[3]; //assignment_statement
-R[17] = MM[R[0] + 3];//factor bar
+R[4] = MM[R[0] + 3];//factor bar
 MM[R[1]] = R[0]; //store old frame ptr
 R[1] = R[1] + 1; //incrementing frm ptr storage 
 R[0] = R[1]; //set frame ptr to top of stk
 MM[R[0] + 1] = &&L26;
 R[1] = R[1] + 2; //leave room for return value and address
-MM[R[0] + 2] = R[17]; //passing argument 
+MM[R[0] + 2] = R[4]; //passing argument 
 goto PUTBOOL;
 L26: R[1] = R[0];
 R[0] = MM[R[0]-1];
 R[3] = MM[R[0] + 33];//factor putBool
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 0;//factor
-R[17] = 9;//factor
-R[3] = R[3] - R[17]; //arithop 2
-R[17] = 3;//factor
-R[3] = R[3] / R[17]; //term
-R[18] = 0;//factor
-R[19] = 3;//factor
-R[18] = R[18] - R[19]; //arithop 2
-R[3] = R[3] == R[18]; //relation 
+R[4] = 9;//factor
+R[3] = R[3] - R[4]; //arithop 2
+R[4] = 3;//factor
+R[3] = R[3] / R[4]; //term 2
+R[4] = 0;//factor
+R[5] = 3;//factor
+R[4] = R[4] - R[5]; //arithop 2
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 3] = R[3]; //assignment_statement
-R[18] = MM[R[0] + 3];//factor bar
+R[4] = MM[R[0] + 3];//factor bar
 MM[R[1]] = R[0]; //store old frame ptr
 R[1] = R[1] + 1; //incrementing frm ptr storage 
 R[0] = R[1]; //set frame ptr to top of stk
 MM[R[0] + 1] = &&L27;
 R[1] = R[1] + 2; //leave room for return value and address
-MM[R[0] + 2] = R[18]; //passing argument 
+MM[R[0] + 2] = R[4]; //passing argument 
 goto PUTBOOL;
 L27: R[1] = R[0];
 R[0] = MM[R[0]-1];
 R[3] = MM[R[0] + 34];//factor putBool
 MM[R[0] + 7] = R[3]; //assignment_statement
 R[3] = 1;//factor
-R[18] = 1;//factor
-R[3] = R[3] == R[18]; //relation 
+R[4] = 1;//factor
+R[3] = R[3] == R[4]; //relation 
 MM[R[0] + 0] = R[3]; //assignment_statement
 R[2] = MM[R[0]+1];
 goto *R[2]; //write return statement

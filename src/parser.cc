@@ -725,8 +725,9 @@ int parser::arithOp(int * regnum){
     check_types(tt,INTEGERTYPE);
     check_types(tt,tt2);
     ss << "R[" << *regnum << "] = R[" << *regnum << "]" << ss2.str() ;//<< "; //arithop1" << endl;
+    c->write_code(ss.str());
   }
-  c->write_code(ss.str());
+
   
   debug("exit arithOp; tt is " , tt);
   return tt;
@@ -764,8 +765,8 @@ int parser::arithOp2(stringstream & ss,int* arithreg){
     tt = relation(reg);
     tt2 = arithOp2(ss2,arithreg);
     if(tt2>=0){
-    // arith ops defined only on ints so must force check that they
-    // are both ints.
+      // arith ops defined only on ints so must force check that they
+      // are both ints.
       check_types(tt,INTEGERTYPE);
       check_types(tt,tt2);
       ss << "R[" << *reg << "]; //arithop 2" << endl;
@@ -777,7 +778,6 @@ int parser::arithOp2(stringstream & ss,int* arithreg){
       c->free_reg(*reg);
     }
   }
-  //cout << "parsed arithOp2" << endl;
   debug("exit arithOp2; tt is " , tt);
   return tt;
 }
@@ -835,7 +835,7 @@ int parser::relation2(stringstream& ss, int* reg1){
   debug("exit relation2; tt is " , tt);
   return tt;
 }
-
+/*
 int parser::term(int * regnum){
   if(error_flag){return -1;}
   debug("enter term");
@@ -863,6 +863,70 @@ int parser::term(int * regnum){
     c->write_code(ss.str());
   }
   debug("exit term; tt is " , tt);
+  return tt;
+  }*/
+
+int parser::term(int* regnum){
+  if(error_flag){return -1;}
+  debug("enter term");
+  int tt = -1, tt2=-1;
+  int * reg2;
+  stringstream ss, ss2;
+  tt = factor(regnum);
+  tt2 = term2(ss2,regnum);
+
+  if(tt2 >= 0){ //if there is an op
+    // arith ops defined only on ints so must force check that they
+    // are both ints.
+    check_types(tt,INTEGERTYPE);
+    check_types(tt,tt2);
+    ss << "R[" << *regnum << "] = R[" << *regnum << "]" << ss2.str() ;
+    c->write_code(ss.str());
+  }
+  
+  debug("exit term; tt is " , tt);
+  return tt;
+}
+
+int parser::term2(stringstream& ss, int* regnum){
+  if(error_flag){return -1;}
+  debug("enter arithOp2");
+  int tt = -1, tt2=-1;
+  bool hadOp = false;
+  switch(next_token->get_type()){
+  case TIMES:
+    ss << " * ";
+    hadOp = true;
+    break;
+  case DIVIDE:
+    ss << " / ";
+    hadOp = true;
+    break;
+  }
+
+  if(hadOp){
+    scan_next_token();
+    int * reg;
+    reg = new int(c->get_next_free_reg());
+    stringstream ss2;
+    c->use_reg(*reg);
+    tt = factor(reg);
+    tt2 = term2(ss2,regnum);
+    if(tt2 >=0 ){
+      // arith ops defined only on ints so must force check that they
+      // are both ints.
+      check_types(tt,INTEGERTYPE);
+      check_types(tt,tt2);
+      ss << "R[" << *reg << "]; //term 2" << endl;
+      c->free_reg(*reg);
+
+      ss << "R[" << *regnum << "] = R[" << *regnum << "]"<< ss2.str();//<< "; //term2" << endl;
+    }else{
+      ss << "R[" << *reg << "]; //term 2" << endl;
+      c->free_reg(*reg);
+    }
+  }
+  debug("exit term2; tt is " , tt);
   return tt;
 }
 
