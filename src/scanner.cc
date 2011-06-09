@@ -77,6 +77,7 @@ void scanner::initFSM(){
   this->fsm.add_state_transition(2,LETTER,2);
   this->fsm.add_state_transition(2,DIGIT,2);
   this->fsm.add_state_transition(2,WHITESPACE,2);
+  this->fsm.add_state_transition(2,UNDERSCORE,2);
   this->fsm.add_state_transition(2,QUOTE,3);
   this->fsm.make_final_state(3);
   final_state_names.insert(pair<int,int>(3,STRING));
@@ -250,6 +251,8 @@ int scanner::get_char_class(char c){
     char_class=LBRACKETc;
   }else if(c == 93){
     char_class=RBRACKETc;
+  }else if(c == 95){
+    char_class=UNDERSCORE;
   }
   else if(c <= 96){ 
     //more punctuation

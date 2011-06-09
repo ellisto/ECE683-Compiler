@@ -994,8 +994,7 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
 
   if(plist.size() > 0){
     token ptok = *next_token;
-    //stringstream ss;
-	
+
     int* expressionreg;
     expressionreg = new int(c->get_next_free_reg());
     c->use_reg(*expressionreg);
