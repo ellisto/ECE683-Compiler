@@ -716,7 +716,7 @@ int parser::arithOp(int * regnum){
 
   tt = relation(regnum);
 
-  tt2 = arithOp2(ss2);
+  tt2 = arithOp2(ss2,regnum);
 
 
   if(tt2 >=0){
@@ -724,7 +724,7 @@ int parser::arithOp(int * regnum){
     // are both ints.
     check_types(tt,INTEGERTYPE);
     check_types(tt,tt2);
-    ss << "R[" << *regnum << "] = R[" << *regnum << "]" << ss2.str() << "; //arithop1" << endl;
+    ss << "R[" << *regnum << "] = R[" << *regnum << "]" << ss2.str() ;//<< "; //arithop1" << endl;
   }
   c->write_code(ss.str());
   
@@ -732,11 +732,7 @@ int parser::arithOp(int * regnum){
   return tt;
 }
 
-int parser::arithOp2(){
-  stringstream ss;
-  return arithOp2(ss);
-}
-int parser::arithOp2(stringstream & ss){
+int parser::arithOp2(stringstream & ss,int* arithreg){
   if(error_flag){return -1;}
   debug("enter arithOp2");
   int tt = -1, tt2=-1;
@@ -766,16 +762,18 @@ int parser::arithOp2(stringstream & ss){
     stringstream ss2;
     c->use_reg(*reg);
     tt = relation(reg);
-    tt2 = arithOp2(ss2);
+    tt2 = arithOp2(ss2,arithreg);
     if(tt2>=0){
+    // arith ops defined only on ints so must force check that they
+    // are both ints.
+      check_types(tt,INTEGERTYPE);
       check_types(tt,tt2);
-      stringstream ss3;
-      ss3 << "R[" << *reg << "] = R[" << *reg << "]"<< ss2.str() << "; //arithop2" << endl;
-      c->write_code(ss3.str());
-      ss << "R[" << *reg << "]";
+      ss << "R[" << *reg << "]; //arithop 2" << endl;
       c->free_reg(*reg);
+
+      ss << "R[" << *arithreg << "] = R[" << *arithreg << "]"<< ss2.str();//<< "; //arithop2" << endl;
     }else{
-      ss << "R[" << *reg << "]";
+      ss << "R[" << *reg << "]; //arithop 2" << endl;
       c->free_reg(*reg);
     }
   }

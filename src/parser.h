@@ -72,7 +72,7 @@ class parser{
   int arithOp();
   int arithOp(int * regnum);
   int arithOp2();
-  int arithOp2(stringstream&);
+  int arithOp2(stringstream&,int*);
   int relation(int * regnum);
   int relation2(stringstream&,int*);
   int term(int * regnum);
