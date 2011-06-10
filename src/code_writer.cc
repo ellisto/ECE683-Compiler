@@ -177,38 +177,38 @@ int code_writer::get_next_free_reg(){
 
 bool code_writer::use_reg(int rnum){
   if(rnum >= registers.size()){
-    cerr << "Register R" << rnum << " is outside scope of registers" << endl;
+    cerr << "Register R[" << rnum << "] is outside scope of registers (trying to use)" << endl;
     return false;
   }
   if(!registers[rnum]){
     stringstream ss;
-    ss << "using R" << rnum << endl;
+    ss << "using R[" << rnum << "]" <<endl;
     debug(ss.str());
     registers[rnum] = true;
     return true;
   }else{
-    cerr << "Register R" << rnum << " still in use!"  << endl;
+    cerr << "Register R[" << rnum << "] still in use!"  << endl;
     return false;
   }
 }
 
 bool code_writer::free_reg(int rnum){
   if(rnum >= registers.size()){
-    cerr << "Register R" << rnum << " is outside scope of registers" << endl;
+    cerr << "Register R[" << rnum << "] is outside scope of registers (trying to free)" << endl;
     return false;
   }
   if(rnum < 2){
-    cerr << "Register R" << rnum << " is reserved, cannot free it!"  << endl;
+    cerr << "Register R[" << rnum << "] is reserved, cannot free it!"  << endl;
     return false;
   }
   if(registers[rnum]){
     stringstream ss;
-    ss << "Freeing R" << rnum << endl;
+    ss << "Freeing R[" << rnum << "]" <<  endl;
     debug(ss.str());
     registers[rnum] = false;
     return true;
   }else{
-    cerr << "Register R" << rnum << " already free!"  << endl;
+    cerr << "Register R[" << rnum << "] already free!"  << endl;
     return false;
   }
 }

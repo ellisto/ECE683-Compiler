@@ -23,6 +23,7 @@ class parser{
   code_writer * c;
   bool error_flag;
   bool ever_error;
+  bool returned;
   //  int next_type;
  public:
   //constructors

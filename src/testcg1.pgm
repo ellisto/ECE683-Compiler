@@ -1,16 +1,19 @@
 integer function myfunction()
   integer arr[5];
   integer arr2[5];
+  integer function arrfunc(integer a[5])
+    begin
+      arrfunc := a[4];
+    end function;
   integer i;
   integer tmp;
 begin
   i :=0;
-    while (i < 5)
-    arr[i] := i;
+  while (i < 5)
+    arr[i] := 7*i;
     tmp := putInt(arr[i]);
     i := i + 1;
   end while;
   tmp := putString(" ");
-  arr2 := arr;
-  myfunction := putInt(arr2[3]);
+  myfunction := putInt(arrfunc(arr));
 end function

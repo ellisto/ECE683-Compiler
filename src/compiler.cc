@@ -51,7 +51,7 @@ int main(int argc, char * argv[]){
   c.init_std_defs();
   c.finalize_generated_code();
   
-  if(!error_flag){
+    if(!error_flag){
     //compile generated code
     cout << endl << endl;
     //  system(string("cat " + c.get_gen_filename()).c_str());
@@ -62,8 +62,8 @@ int main(int argc, char * argv[]){
     
     //test generated code
     system("./a.out");
-  }else{
-
+    }else{
+    cout << "There were errors." << endl;
     //should delete generated_code.c, but leaving it there for debug
     //now.
     }
