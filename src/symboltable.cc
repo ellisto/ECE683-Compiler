@@ -224,6 +224,14 @@ void symboltable::increment_ardepth(token t){
   debug(ss.str());
 }
 
+void symboltable::decrement_ardepth(token t){
+  symboltableentry entry = *find_entry(t);
+  entry.set_ardepth(entry.get_ardepth()-1);
+  stringstream ss;
+  ss <<"decrementing ardepth for " << t << "; is now " << entry.get_ardepth() <<  endl;
+  debug(ss.str());
+}
+
 void symboltable::set_ardepth(token t, int d){
   symboltableentry entry = *find_entry(t);
   entry.set_ardepth(d);

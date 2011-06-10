@@ -44,6 +44,7 @@ class symboltable{
   //---
 
   void increment_ardepth(token);
+  void decrement_ardepth(token t);
   void set_ardepth(token,int);
   int get_ardepth(token);
   
