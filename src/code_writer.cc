@@ -9,6 +9,8 @@ code_writer::code_writer(){
   // R0 and R1 should be reserved, and start out full.
   registers.push_back(1); 
   registers.push_back(1);
+  //and R[2] too?
+  registers.push_back(1);
   string_table_ptr = MM_SIZE;
   string_table_ptr--;
 }
@@ -22,6 +24,8 @@ code_writer::code_writer(string gen_file,string code_defs_file,string std_defs_f
   
   // R0 and R1 should be reserved, and start out full.
   registers.push_back(1); 
+  registers.push_back(1);
+  //and R[2] too?
   registers.push_back(1);
   string_table_ptr = MM_SIZE;
   string_table_ptr--;

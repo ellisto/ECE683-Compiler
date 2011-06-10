@@ -136,9 +136,18 @@ void parser::function_declaration(int typemark){
   add_scope(ftoken);
   function_body(ftoken);
  
-  c->write_code("R[2] = MM[R[0]+1];\n");
-  c->write_code("goto *R[2]; //write return statement\n"); //write return statement
-  c->write_code(lblendfunc + ":");
+  stringstream ss;
+  int* reg = new int(c->get_next_free_reg());
+  //c->use_reg(*reg);
+  // ss << "R[" << *reg << "] = MM[R[0]+1];" << endl
+  //    << "goto *R[" << *reg << "]; //write return statement" << endl
+  //    << lblendfunc << ": ";
+  // c->write_code(ss.str());
+  //c->free_reg(*reg);
+  ss << "R[2] = MM[R[0]+1];" << endl
+     << "goto *R[2]; //write return statement" << endl
+     << lblendfunc << ": ";
+  c->write_code(ss.str());
   remove_scope();
   if(next_token->get_type() != EOFMARKER){
     reset_error();
@@ -421,7 +430,7 @@ void parser::assignment_statement(){
   if(desttok.get_value() == st->get_ftoken().get_value()){
     returned = true;
   }
-  
+  ss << "// ASSIGNMENT STATEMENT, Y'ALL " << endl;
   int tt1 = destination(ss,idxreg);
   check_token_type(ASSIGN,":=");
 
@@ -432,8 +441,9 @@ void parser::assignment_statement(){
   int* expressionreg;
   expressionreg = new int(c->get_next_free_reg());
   c->use_reg(*expressionreg);
+  c->write_code("//here's where they call expression\n");
   int tt2 = expression(expressionreg);
-
+  c->write_code("//did it print?\n");
   check_types(tt1,tt2);
 
   if(tt2 == ARRAYTYPE){ 
@@ -451,10 +461,12 @@ void parser::assignment_statement(){
 	 << "MM[R[0] + " << destoffset + i << "] = R[" << *tmpreg << "]; //dest arr " 
 	 << desttok.get_value() << " element " << i << endl;
     }
+    c->free_reg(*tmpreg);
     
   }else{
     ss << " = R[" << *expressionreg << "]; //assignment_statement "<< desttok.get_value() << endl;
   }
+  ss << "// ASSIGNMENT STATEMENT'S DONE, Y'ALL " << endl;
   c->write_code(ss.str());
   c->free_reg(*expressionreg);
   c->free_reg(*idxreg);
@@ -479,7 +491,7 @@ int parser::destination(stringstream& ss, int* idxreg){
     int* tmpreg = new int(c->get_next_free_reg());
     c->use_reg(*tmpreg);
     ss << "R[" << *tmpreg << "] = R[0] + R[" << *idxreg 
-       << "]; // calc array offset" << endl //add index offset
+       << "]; // calc array offset1" << endl //add index offset
        << "MM[R[" << *tmpreg << "] + " << st->get_offset(potentialarraytok) << "]";
     check_token_type(RBRACKET,"]");
     scan_next_token();
@@ -1057,9 +1069,10 @@ int parser::factor(int * regnum){
 	  int* tmpreg = new int(c->get_next_free_reg());
 	  c->use_reg(*tmpreg);
 	  ss << "R[" << *tmpreg << "] = R[0] + R[" << *idxreg 
-	     << "]; // calc array offset" << endl //add index offset
+	     << "]; // calc array offset2" << endl //add index offset
 	     << "R[" << *regnum << "] = MM[R[" << *tmpreg << "] + " << st->get_offset(ftoken) 
 	     << "]; // array factor " << ftoken.get_value() << endl;
+	  c->free_reg(*tmpreg); //free up tmp reg
 	  c->free_reg(*idxreg); //free up idx reg
 	}
       }
@@ -1071,7 +1084,7 @@ int parser::factor(int * regnum){
   case NUMBER:
     {
       tt = INTEGERTYPE;
-      ss << "R[" << *regnum << "] = " << ftoken.get_value() << ";//factor" << endl;
+      ss << "R[" << *regnum << "] = " << ftoken.get_value() << "; //factor " << ftoken.get_value() << endl;
       c->write_code(ss.str());
       scan_next_token();
       break;
