@@ -1,0 +1,7 @@
+generated_code.c
+clog
+*.o
+*.out
+std_defs.h
+code_defs.h
+*.a
