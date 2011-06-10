@@ -1,8 +1,18 @@
 integer function myfunction()
-  integer function s(integer a)
-   begin     
-     s := a;
-   end function;
+  integer arr[5];
+  integer i;
+  integer tmp;
 begin
-  myfunction := s(s(1));
+//  i :=0;
+  //  while (i < 5)
+  //  arr[i] := i;
+  //  tmp := putInt(arr[i]);
+  //  i := i + 1;
+ // end while;
+// arr[0] := 0;
+// arr[1] := 1;
+// arr[2] := 2;
+ arr[3] := 15;
+// arr[4] := 4;
+  myfunction := putInt(arr[3]);
 end function

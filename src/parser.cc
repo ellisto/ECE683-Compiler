@@ -431,7 +431,6 @@ int parser::destination(stringstream& ss, int* idxreg){
   debug("enter destination");
   token potentialarraytok = *next_token;
   int tt = identifier();
-  ss << "MM[R[0] + " << st->get_offset(potentialarraytok);
   if(next_token->get_type() == LBRACKET){ //array
     if(!st->is_array(potentialarraytok)){
       report_error("Indexing a non-array: " + potentialarraytok.get_value() + " is not an array.",l->get_linenumber());
@@ -441,9 +440,12 @@ int parser::destination(stringstream& ss, int* idxreg){
     // do we need to check the type returned for the index expression?
     // Should at least not be string...
     expression(idxreg);
-    //Check with wilsey to see if this is kosher, or if we must put
-    //R[0] + R[x] in a register first
-    ss << " + R[" << *idxreg << "]"; //add index offset
+
+    int* tmpreg = new int(c->get_next_free_reg());
+    c->use_reg(*tmpreg);
+    ss << "R[" << *tmpreg << "] = R[0] + R[" << *idxreg 
+       << "]; // calc array offset" << endl //add index offset
+       << "MM[R[" << *tmpreg << "] + " << st->get_offset(potentialarraytok) << "]";
     check_token_type(RBRACKET,"]");
     scan_next_token();
   }else{
@@ -452,13 +454,10 @@ int parser::destination(stringstream& ss, int* idxreg){
     //change offset.
     if(st->is_array(potentialarraytok)){
       tt = ARRAYTYPE;
-    } 
+    }else{
+      ss << "MM[R[0] + " << st->get_offset(potentialarraytok) << "]";
+    }
   }
-
-
-  ss << "]";
-
-  
   debug("exit destination; tt is " , tt);
   return tt;
 }
@@ -968,32 +967,34 @@ int parser::factor(int * regnum){
   case ID:
     {
       tt = identifier();
-      /*int* funcreg;
-      funcreg = new int(c->get_next_free_reg());
-      c->use_reg(*funcreg);*/
+
       int* idxreg = name_or_function_call(ftoken,regnum);
 
-      if(!st->is_function(ftoken)){ //if it was a function, code was
-				    //genned in name_or_func_call
+      if(!st->is_function(ftoken) && !st->is_array(ftoken)){ 
+	//if it was a function, code was genned in name_or_func_call
+	// if is array, code will be genned in the block below.
 	ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken);
-	//c->free_reg(*funcreg);//wasnt used, can clear it.
       }
+      
       if(st->is_array(ftoken)){
 	if(*idxreg < 0){
 	  //if its an array without an indexing, just return
 	  //arraytype, don't gen code.
 	  tt = ARRAYTYPE;
 	}else{
-	  //Check with wilsey to see if this is kosher, or if we must put
-	  //R[0] + R[x] in a register first
-	  ss << " + R[" << *idxreg << "]"; //adding index offset
+	  int* tmpreg = new int(c->get_next_free_reg());
+	  c->use_reg(*tmpreg);
+	  ss << "R[" << *tmpreg << "] = R[0] + R[" << *idxreg 
+	     << "]; // calc array offset" << endl //add index offset
+	     << "R[" << *regnum << "] = MM[R[" << *tmpreg << "] + " << st->get_offset(ftoken) 
+	     << "]; // factor" << ftoken.get_value() << endl;
 	}
 	c->free_reg(*idxreg); //free up idx reg
       }
-      if(tt!= ARRAYTYPE && !st->is_function(ftoken)){
+      if(tt!= ARRAYTYPE && !st->is_function(ftoken) && !st->is_array(ftoken)){
 	ss << "];//factor " << ftoken.get_value() << endl;
-	c->write_code(ss.str());
       }
+      c->write_code(ss.str());
       break;
     }
     
@@ -1055,17 +1056,6 @@ int* parser::name_or_function_call(token t,int* funcreg){
       string lblreturn = c->get_next_label();
       stringstream ss;
       
-      //cout << "increment for frame ptr storage: " << endl;
-      //st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
-      
-      //st->set_offset(t,st->get_ardepth(st->get_ftoken())+1); // where the return value will be stored.
-      
-      //add_scope(t);
-
-      //ss.clear();
-      //ss.str("");
-      
-
       ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
 	 << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
 	 << "R[0] = R[1]; //set frame ptr to top of stk" << endl
