@@ -51,6 +51,9 @@ class symboltable{
   void set_offset(token,int);
   int get_offset(token);
   
+  void set_declared_in(token,string);
+  string get_declared_in(token);
+  
   friend ostream& operator<<(ostream& out, const symboltable& t);
 };
 

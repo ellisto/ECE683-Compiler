@@ -14,9 +14,9 @@ class symboltableentry{
   vector<pair<token*,int> > * paramlist;
   map<int,pair<int,int> > * arrayparams; // arrayparams[i] = {type,size}
   string * label;
-  //int * memloc;
   int* ardepth;
   int* offset;
+  string * declared_in;
  public:
   symboltableentry(token);
   ~symboltableentry();
@@ -36,6 +36,9 @@ class symboltableentry{
   
   void set_offset(int);
   int get_offset();
+
+  string get_declared_in();
+  void set_declared_in(string);
   /*
   //not needed?
   void set_memloc(int);

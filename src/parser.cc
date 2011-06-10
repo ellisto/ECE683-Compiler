@@ -240,6 +240,7 @@ void parser::function_body(token ftoken){
     token argtok = *(plist[i].first);
     //add arg to symbol table
     argtok = *st->add(argtok);
+    st->set_declared_in(argtok,st->get_ftoken().get_value());
     st->set_tokentype(argtok,tt);
     st->set_offset(argtok,st->get_ardepth(st->get_ftoken()));
     if(tt == ARRAYTYPE){
@@ -329,7 +330,7 @@ void parser::variable_declaration(int tm){
   token varid = *next_token;
   identifier(tm);
   varid = *st->add(varid); // add to current scope if not already there
-  
+  st->set_declared_in(varid,st->get_ftoken().get_value());
 
   if(next_token->get_type() == LBRACKET){
     check_token_type(LBRACKET,"'['");
@@ -1002,14 +1003,47 @@ int parser::factor(int * regnum){
     {
       tt = identifier();
 
+      //functions get codegenned inside of name_or_func_call
       int* idxreg = name_or_function_call(ftoken,regnum);
 
+      //Nonfunctions and Nonarrays
       if(!st->is_function(ftoken) && !st->is_array(ftoken)){ 
-	//if it was a function, code was genned in name_or_func_call
-	// if is array, code will be genned in the block below.
-	ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken);
+	//check to see if tok is in current scope, or if we have to
+	//chain back
+	string dec = st->get_declared_in(ftoken);
+	if(dec == st->get_ftoken().get_value()){
+	  //in current scope, easy codegen:
+	  ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken)
+	     << "];//factor " << ftoken.get_value() << endl;
+	}else{
+	  //gotta chain back.
+	  int* rdec = new int(c->get_next_free_reg());
+	  c->use_reg(*rdec);
+	  int* tst = new int(c->get_next_free_reg());
+	  c->use_reg(*tst);
+
+	  string lblloop = c->get_next_label();
+	  string lbldone = c->get_next_label();
+	  
+	  string declbl = st->get_label(token(ID,dec));
+
+	  ss << "R[" << *regnum << "] = R[0];" << endl
+	     << "R[" << *rdec << "] = &&" << declbl << "; //store id we're looking for" << endl
+	     << lblloop << ": R[" << *tst << "] = MM[R[" << *regnum << "]];" << endl
+	     << "R[" << *tst << "] = (R[" << *tst << "] == R[" << *rdec 
+	     << "]); //see if we're there yet" <<endl
+	     << "if(R[" << *tst << "]) goto " << lbldone << "; // if so, then done" << endl
+	     << "R[" << *regnum <<"] = MM[R[" << *regnum << "]-1]; // go back to next FP" << endl
+	     << "goto " << lblloop << ";" << endl
+	     << lbldone << ": R[" << *regnum << "] = MM[R[" << *regnum << "] + " 
+	     << st->get_offset(ftoken) << "]; // offset from correct FP" << endl;
+	  c->free_reg(*rdec);
+	  c->free_reg(*tst);
+	}
       }
       
+
+      //Arrays
       if(st->is_array(ftoken)){
 	if(*idxreg < 0){
 	  //if its an array without an indexing, put memory address in
@@ -1018,20 +1052,18 @@ int parser::factor(int * regnum){
 	  ss << "R[" << *regnum << "] = R[0] + " << st->get_offset(ftoken) 
 	     << "; // store addr of array"  << endl;
 	}else{
+	  // calculate array offset, and return element at specified
+	  // idx
 	  int* tmpreg = new int(c->get_next_free_reg());
 	  c->use_reg(*tmpreg);
 	  ss << "R[" << *tmpreg << "] = R[0] + R[" << *idxreg 
 	     << "]; // calc array offset" << endl //add index offset
 	     << "R[" << *regnum << "] = MM[R[" << *tmpreg << "] + " << st->get_offset(ftoken) 
 	     << "]; // array factor " << ftoken.get_value() << endl;
-	}
-	if(*idxreg >= 0){
 	  c->free_reg(*idxreg); //free up idx reg
 	}
       }
-      if(tt!= ARRAYTYPE && !st->is_function(ftoken) && !st->is_array(ftoken)){
-	ss << "];//factor " << ftoken.get_value() << endl;
-      }
+
       c->write_code(ss.str());
       break;
     }
@@ -1103,6 +1135,7 @@ int* parser::name_or_function_call(token t,int* funcreg){
       ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
 	 << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
 	 << "R[0] = R[1]; //set frame ptr to top of stk" << endl
+	 << "MM[R[0]] = &&" << lblfunc << "; //store addrs as func id"<< endl
 	 << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
 	 << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
       if(next_token->get_type() != RPAREN){
@@ -1151,6 +1184,7 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
 	//cout << plist[argnum].first->get_value() << " is an array" << endl;
       }
       token argtok = *st->add(*(plist[argnum].first)); 
+      st->set_declared_in(argtok,st->get_ftoken().get_value());
       if(isarray){
 	int* tmpreg = new int(c->get_next_free_reg());
 	c->use_reg(*tmpreg);
@@ -1184,18 +1218,13 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
 void parser::add_scope(token ftoken){
   symboltable * new_st = new symboltable();
   new_st->set_prev(st);
-  //new_st->set_ftoken(st->get_ftoken());
   new_st->set_ftoken(ftoken);
   st = new_st;
-  //cout << "ftoken here: " << st->get_ftoken() << endl;
   s->set_st(st); //sync scanner st
-  //cout << "added scope; new st is " << st << endl;
 }
 void parser::remove_scope(){
-  //  cout << "removing scope. removing st: " << st << endl;
   symboltable* old_st = st;
   st = old_st->get_prev();
   s->set_st(st);//sync scanner st
   delete(old_st);
-  //  cout << "removed scope; back to " << st << endl;
 }

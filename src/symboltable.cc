@@ -106,14 +106,11 @@ token * symboltable::add(token t){
 symboltableentry *symboltable::find_entry(token t){
   unordered_set<symboltableentry>::iterator it;
   symboltableentry * ret = NULL;
-  //  cout << "finding entry for " << t << endl;
   it = table.find(t);
   if(it == table.end()){//if it's not found in this st, go back a level.
-    //cout << "here" << endl;
     if(prev)
       ret = prev->find_entry(t);
   }else{
-    //    ret = const_cast<symboltableentry*>( &(*it) );
     ret = new symboltableentry(*it);
   }
   return ret;
@@ -257,6 +254,19 @@ int symboltable::get_offset(token t){
   symboltableentry entry = *find_entry(t);
   return entry.get_offset();
 }
+
+void symboltable::set_declared_in(token t,string dec){
+  symboltableentry entry = *find_entry(t);
+  stringstream ss;
+  ss << "setting declared_in for " << t << " to " << dec << endl;
+  debug(ss.str());
+  entry.set_declared_in(dec);
+}
+string symboltable::get_declared_in(token t){
+  symboltableentry entry = *find_entry(t);
+  return entry.get_declared_in();
+}
+
 
 token symboltable::get_ftoken(){
   return *ftoken;

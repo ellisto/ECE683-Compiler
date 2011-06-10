@@ -13,7 +13,7 @@ symboltableentry::symboltableentry(token t){
   ardepth = new int(1);
   offset =  new int(0);
   this->label = new string();
-  //  this->token_type = tt;
+  this->declared_in = new string();
 }
 
 symboltableentry::~symboltableentry(){
@@ -86,14 +86,6 @@ int symboltableentry::get_type(){
   return *type;
 }
 
-/*
-  void symboltableentry::set_memloc(int ml){
-  *memloc = ml;
-  }
-  int  symboltableentry::get_memloc(){
-  return *memloc;
-  }*/
-
 void symboltableentry::increment_ardepth(){
   (*ardepth)++;
 }
@@ -115,6 +107,14 @@ int symboltableentry::get_offset(){
   return *offset;
 }
 
+
+void symboltableentry::set_declared_in(string d){
+  *(this->declared_in) = d;
+}
+
+string symboltableentry::get_declared_in(){
+  return *(this->declared_in);
+}
 
 bool operator<(const symboltableentry& t1, const symboltableentry& t2){
   return *(t1.t) < *(t2.t);

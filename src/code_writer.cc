@@ -73,6 +73,7 @@ void code_writer::finalize_generated_code(){
   if(generated_code.is_open()){
     generated_code <<  "R[0] = 0;" << endl
 		   <<  "R[1] = R[0];" << endl
+		   <<  "MM[R[0]] = &&L0;" << endl
 		   <<  "MM[R[0]+1] = &&end;" << endl
 		   <<  "R[1] = R[1]+2;" << endl
 		   <<  "goto L0;" << endl
