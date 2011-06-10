@@ -402,11 +402,15 @@ void parser::assignment_statement(){
   int* idxreg;
   idxreg = new int(c->get_next_free_reg());
   c->use_reg(*idxreg);
+  token desttok = *next_token;
+
   int tt1 = destination(ss,idxreg);
   check_token_type(ASSIGN,":=");
 
   scan_next_token();
   
+  token assgntok = *next_token;
+
   int* expressionreg;
   expressionreg = new int(c->get_next_free_reg());
   c->use_reg(*expressionreg);
@@ -414,13 +418,26 @@ void parser::assignment_statement(){
 
   check_types(tt1,tt2);
 
-  if(tt2 == ARRAYTYPE){ //it's an array, not indexed.
-    //don't gen code, but adjust offsets.
+  if(tt2 == ARRAYTYPE){ 
+    //it's an array, not indexed.  need to check that they are same
+    //size and then copy elements
+    int arraysize = st->get_arraysize(desttok);
+    check_array_sizes(arraysize,st->get_arraysize(assgntok));
+    int destoffset = st->get_offset(desttok);
+    int assgnoffset = st->get_offset(assgntok);
+    int* tmpreg = new int(c->get_next_free_reg());
+    c->use_reg(*tmpreg);
+    for(int i = 0; i < arraysize; i++){
+      ss << "R[" << *tmpreg << "] = MM[R[0] + " << assgnoffset + i << "]; // arr " 
+	 << assgntok.get_value() << " element " << i << endl
+	 << "MM[R[0] + " << destoffset + i << "] = R[" << *tmpreg << "]; //dest arr " 
+	 << desttok.get_value() << " element " << i << endl;
+    }
     
   }else{
     ss << " = R[" << *expressionreg << "]; //assignment_statement" << endl;
-    c->write_code(ss.str());
   }
+  c->write_code(ss.str());
   c->free_reg(*expressionreg);
   c->free_reg(*idxreg);
   debug("exit assignment_statement");
