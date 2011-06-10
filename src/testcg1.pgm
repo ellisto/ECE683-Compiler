@@ -1,0 +1,8 @@
+integer function myfunction()
+  integer function s(integer a)
+   begin     
+     s := a;
+   end function;
+begin
+  myfunction := s(s(1));
+end function

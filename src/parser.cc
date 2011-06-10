@@ -45,7 +45,6 @@ bool parser::parse(){
   st->add(globaltoken);
   st->set_function(globaltoken,vector<pair<token*,int> >());
   st->set_ftoken(globaltoken);
-  //  st->increment_ardepth(st->get_ftoken());
   function_declaration(tm);
   //return !error_flag;
   return !ever_error;
@@ -414,8 +413,14 @@ void parser::assignment_statement(){
   int tt2 = expression(expressionreg);
 
   check_types(tt1,tt2);
-  ss << " = R[" << *expressionreg << "]; //assignment_statement" << endl;
-  c->write_code(ss.str());
+
+  if(tt2 == ARRAYTYPE){ //it's an array, not indexed.
+    //don't gen code, but adjust offsets.
+    
+  }else{
+    ss << " = R[" << *expressionreg << "]; //assignment_statement" << endl;
+    c->write_code(ss.str());
+  }
   c->free_reg(*expressionreg);
   c->free_reg(*idxreg);
   debug("exit assignment_statement");
@@ -441,9 +446,19 @@ int parser::destination(stringstream& ss, int* idxreg){
     ss << " + R[" << *idxreg << "]"; //add index offset
     check_token_type(RBRACKET,"]");
     scan_next_token();
+  }else{
+    //if destination is an array variable, not an indexed entry of the
+    //array, return ARRAYTYPE so above knows to not write code, just
+    //change offset.
+    if(st->is_array(potentialarraytok)){
+      tt = ARRAYTYPE;
+    } 
   }
+
+
   ss << "]";
 
+  
   debug("exit destination; tt is " , tt);
   return tt;
 }
@@ -626,7 +641,7 @@ int parser::identifier(int typemark){
   int tt = st->get_tokentype(*next_token);
   if( tt < 0){
     report_error("Undeclared function or variable: " + next_token->get_value(), l->get_linenumber());
-    cout << *st << endl;
+    //cout << *st << endl;
     
     panic();
     error_flag = true;
@@ -953,16 +968,32 @@ int parser::factor(int * regnum){
   case ID:
     {
       tt = identifier();
-      int* idxreg = name_or_function_call(ftoken);
-      ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken);
+      /*int* funcreg;
+      funcreg = new int(c->get_next_free_reg());
+      c->use_reg(*funcreg);*/
+      int* idxreg = name_or_function_call(ftoken,regnum);
+
+      if(!st->is_function(ftoken)){ //if it was a function, code was
+				    //genned in name_or_func_call
+	ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken);
+	//c->free_reg(*funcreg);//wasnt used, can clear it.
+      }
       if(st->is_array(ftoken)){
-	//Check with wilsey to see if this is kosher, or if we must put
-	//R[0] + R[x] in a register first
-	ss << " + R[" << *idxreg << "]"; //adding index offset
+	if(*idxreg < 0){
+	  //if its an array without an indexing, just return
+	  //arraytype, don't gen code.
+	  tt = ARRAYTYPE;
+	}else{
+	  //Check with wilsey to see if this is kosher, or if we must put
+	  //R[0] + R[x] in a register first
+	  ss << " + R[" << *idxreg << "]"; //adding index offset
+	}
 	c->free_reg(*idxreg); //free up idx reg
       }
-      ss << "];//factor " << ftoken.get_value() << endl;
-      c->write_code(ss.str());
+      if(tt!= ARRAYTYPE && !st->is_function(ftoken)){
+	ss << "];//factor " << ftoken.get_value() << endl;
+	c->write_code(ss.str());
+      }
       break;
     }
     
@@ -990,7 +1021,7 @@ int parser::factor(int * regnum){
 
 //returns ptr to register number holding array idx, if t is an array.
 //otherwise returns -1.
-int* parser::name_or_function_call(token t){
+int* parser::name_or_function_call(token t,int* funcreg){
   int* expressionreg = new int(-1);
   if(error_flag){return expressionreg;}
   debug("enter name_or_function_call");
@@ -1024,14 +1055,16 @@ int* parser::name_or_function_call(token t){
       string lblreturn = c->get_next_label();
       stringstream ss;
       
-      st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
+      //cout << "increment for frame ptr storage: " << endl;
+      //st->increment_ardepth(st->get_ftoken()); // increment to take frame pointer storage into account
       
-      st->set_offset(t,st->get_ardepth(st->get_ftoken())); // where the return value will be stored.
+      //st->set_offset(t,st->get_ardepth(st->get_ftoken())+1); // where the return value will be stored.
       
       //add_scope(t);
 
       //ss.clear();
       //ss.str("");
+      
 
       ss << "MM[R[1]] = R[0]; //store old frame ptr" << endl 
 	 << "R[1] = R[1] + 1; //incrementing frm ptr storage " << endl 
@@ -1042,8 +1075,11 @@ int* parser::name_or_function_call(token t){
 	argument_list(t,0,2,ss); //initial offset of 2
       }
       ss << "goto " << lblfunc << ";" << endl
-	 << lblreturn << ": R[1] = R[0];" << endl
+	 << lblreturn << ": " 
+	 << "R[" << *funcreg << "] = MM[R[0]]; //store return val" << endl
+	 << "R[1] = R[0];" << endl
 	 << "R[0] = MM[R[0]-1];" << endl;
+
       c->write_code(ss.str());
       //remove_scope();
       check_token_type(RPAREN,"')'");
@@ -1084,7 +1120,7 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
 	  ss << "MM[R[0] + " << argnum + i +  offset << "]"  //destination
 	   << " = R[" << *expressionreg << "]; //passing argument " << argtok.get_value() << endl;
 	}
-	//offset += arraysize;
+	offset += arraysize;
       }else{
 	ss << "MM[R[0] + " << argnum + offset << "]"  //destination
 	   << " = R[" << *expressionreg << "]; //passing argument " << argtok.get_value() << endl;

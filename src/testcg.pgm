@@ -1,4 +1,16 @@
 integer function myfunction()
+//  integer b;
+  //integer tmp;
+  integer function s(integer a)
+   begin
+    // tmp := putString("in s_ global b is");
+    // tmp := putInt(b);
+   //  tmp := putInt(a);
+   //  s := a + b;
+   s := a;
+   end function;
 begin
-  myfunction := putString("herp derp");
+ // b := 3;
+  //tmp := s(1);
+  myfunction := putInt(s(1));
 end function

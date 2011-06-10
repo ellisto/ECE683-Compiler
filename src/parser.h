@@ -78,7 +78,7 @@ class parser{
   int term(int * regnum);
   int term2(stringstream&,int*);
   int factor(int*);
-  int* name_or_function_call(token);
+  int* name_or_function_call(token,int*);
   void argument_list(token, int,int,stringstream&);
   
   
