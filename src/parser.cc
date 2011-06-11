@@ -509,7 +509,7 @@ int parser::destination(stringstream& ss, int* idxreg){
       //array, return ARRAYTYPE 
     }else if(st->is_function(potentialarraytok)){
       //returning a function, so no offset.
-      cout << "returning a function: " << potentialarraytok.get_value() << endl;
+      //cout << "returning a function: " << potentialarraytok.get_value() << endl;
       ss << "MM[R[0]]";
     }else{
       // not an array at all.
@@ -743,7 +743,7 @@ int parser::identifier(int typemark){
   int tt = st->get_tokentype(*next_token);
   if( tt < 0){
     report_error("Undeclared function or variable: " + next_token->get_value(), l->get_linenumber());
-    cout << *st << endl;
+    //cout << *st << endl;
     
     panic();
     error_flag = true;
@@ -1080,9 +1080,9 @@ int parser::factor(int * regnum){
 	//chain back
 	string dec = st->get_declared_in(ftoken);
 	string currftoken = st->get_ftoken().get_value();
-	//cout << "found " << ftoken.get_value() << " in " << dec << endl;
+	cout << "found " << ftoken.get_value() << " in " << dec << endl;
 	if(dec == currftoken){
-	  //cout << "in " << currftoken << " " << ftoken.get_value() << " is easy" << endl;
+	  cout << "in " << currftoken << " " << ftoken.get_value() << " is easy" << endl;
 	  //in current scope, easy codegen:
 	  ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken)
 	     << "];//factor " << ftoken.get_value() << endl;
@@ -1211,7 +1211,9 @@ int* parser::name_or_function_call(token t,int* funcreg){
 	 << "MM[R[0] + 1] = &&" << lblreturn << ";" << endl
 	 << "R[1] = R[1] + 2; //leave room for return value and address" << endl;
       if(next_token->get_type() != RPAREN){
+	add_scope(t);
 	argument_list(t,0,2,ss); //initial offset of 2
+	remove_scope();
       }
       ss << "goto " << lblfunc << ";" << endl
 	 << lblreturn << ": " 
@@ -1220,7 +1222,7 @@ int* parser::name_or_function_call(token t,int* funcreg){
 	 << "R[0] = MM[R[0]-1];" << endl;
 
       c->write_code(ss.str());
-      //remove_scope();
+      
       check_token_type(RPAREN,"')'");
       scan_next_token();
     }
@@ -1270,18 +1272,19 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
 	c->free_reg(*tmpreg);
 	offset += arraysize;
       }else{
+	//stringstream ss2;
 	ss << "MM[R[0] + " << argnum + offset << "]"  //destination
 	   << " = R[" << *expressionreg << "]; //passing argument " << argtok.get_value() << endl;
+	c->write_code(ss.str());
       }
       
     }
-
-    c->free_reg(*expressionreg);
 
     if(next_token->get_type() == COMMA){
       scan_next_token();
       argument_list(t,++argnum,offset,ss);
     }
+    c->free_reg(*expressionreg);
   }
 
   debug("exit argument_list");

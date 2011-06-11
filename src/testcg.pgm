@@ -1,16 +1,11 @@
 integer function myfunction()
-//  integer b;
-  //integer tmp;
-  integer function s(integer a)
+  integer tmp;
+  integer function add(integer a, integer b)
    begin
-    // tmp := putString("in s_ global b is");
-    // tmp := putInt(b);
-   //  tmp := putInt(a);
-   //  s := a + b;
-   s := a;
+     tmp := putInt(a);
+     tmp := putInt(b);
+     add := a + b;
    end function;
 begin
- // b := 3;
-  //tmp := s(1);
-  myfunction := putInt(s(1));
+  myfunction := putInt(add(100,10));
 end function
