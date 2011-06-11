@@ -1276,12 +1276,13 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
       
     }
 
-    c->free_reg(*expressionreg);
+
 
     if(next_token->get_type() == COMMA){
       scan_next_token();
       argument_list(t,++argnum,offset,ss);
     }
+    c->free_reg(*expressionreg);
   }
 
   debug("exit argument_list");
