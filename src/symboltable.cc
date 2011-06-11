@@ -31,32 +31,32 @@ symboltable::symboltable(){
   add(token(OR,string("or")));
   add(token(NOT,string("not")));
   
-  token* t = add(token(ID, "getBool"));
+  token* t = add(token(ID, "getbool"));
   set_tokentype(*t,BOOLEANTYPE);
   set_function(*t,vector<pair<token*,int> >());
   set_label(*t,"GETBOOL");
 
-  t = add(token(ID, "getInt"));
+  t = add(token(ID, "getint"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >());
   set_label(*t,"GETINT");
 
-  t = add(token(ID, "getString"));
+  t = add(token(ID, "getstring"));
   set_tokentype(*t,STRINGTYPE);
   set_function(*t,vector<pair<token*,int> >());
   set_label(*t,"GETSTRING");
 
-  t = add(token(ID, "putBool"));
+  t = add(token(ID, "putbool"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),BOOLEANTYPE)));
   set_label(*t,"PUTBOOL");
 
-  t = add(token(ID, "putInt"));
+  t = add(token(ID, "putint"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),INTEGERTYPE)));
   set_label(*t,"PUTINT");
 
-  t = add(token(ID, "putString"));
+  t = add(token(ID, "putstring"));
   set_tokentype(*t,INTEGERTYPE);
   set_function(*t,vector<pair<token*,int> >(1,pair<token*,int>(new token(),STRINGTYPE)));
   set_label(*t,"PUTSTRING");

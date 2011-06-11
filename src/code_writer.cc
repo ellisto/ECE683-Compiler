@@ -2,7 +2,7 @@
 #include "code_writer.h"
 #include "report_error.h"
 
-#define DEBUG_REG
+//#define DEBUG_REG
 
 code_writer::code_writer(){
   label_num = 0;

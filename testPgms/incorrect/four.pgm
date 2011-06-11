@@ -9,7 +9,7 @@ integer y;
 integer z;
 integer tmp;
 
-integer function foo() returns 
+integer function foo() 
 
 begin
  foo := 0;  

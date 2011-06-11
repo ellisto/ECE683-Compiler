@@ -53,12 +53,11 @@ int main(int argc, char * argv[]){
   
     if(!error_flag){
     //compile generated code
-    cout << endl << endl;
+      //cout << endl << endl;
     //  system(string("cat " + c.get_gen_filename()).c_str());
-    cout << endl << endl;
-    system(string("gcc -g -static " + c.get_gen_filename() + " -L. -lruntime -lm ").c_str()); 
-    //1> clog 2>clog").c_str());
-    cout << endl << endl;
+      //    cout << endl << endl;
+    system(string("gcc -g -static " + c.get_gen_filename() + " -L. -lruntime -lm 1> clog 2>clog").c_str());
+    //cout << endl << endl;
     
     //test generated code
     system("./a.out");

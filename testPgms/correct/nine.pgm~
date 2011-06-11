@@ -16,23 +16,23 @@ string function testfunction ()
       when 1 then
         outString := label;
         result := putString(outString);
-        dowork := dowork(0,"Doing work for case 1");
+        dowork := doWork(0,"Doing work for case 1");
       when 2 then
         outString := label;
         result := putString(outString);
-        dowork := dowork(1,"Doing work for case 2");
+        dowork := doWork(1,"Doing work for case 2");
       default then
         outString := label;
         result := putString(outString);
-        dowork := dowork(2,"Doing work for default case");
+        dowork := doWork(2,"Doing work for default case");
     end case;
     dowork := 4;
   end function;
 begin
   outString := "A test job";
-  result := putString(outString);
+  putString(outstring);
   result := dowork(1, "First String");
-  result := putString(outString);
+  putString(outstring);
   result := dowork(5, "Second String");
-  result := putString(outString);
+  putString(outstring);
 end function

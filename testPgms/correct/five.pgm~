@@ -22,6 +22,6 @@ begin
  a[1] := foo(a[0],a[0]);
  tmp := putInt(a[0]);  // should output the value 5
  tmp := putInt(a[1]);  // should output 0
- test := 1 != 1200;
+ test := 1;
 
 end function

@@ -509,7 +509,7 @@ int parser::destination(stringstream& ss, int* idxreg){
       //array, return ARRAYTYPE 
     }else if(st->is_function(potentialarraytok)){
       //returning a function, so no offset.
-      cout << "returning a function: " << potentialarraytok.get_value() << endl;
+      //cout << "returning a function: " << potentialarraytok.get_value() << endl;
       ss << "MM[R[0]]";
     }else{
       // not an array at all.
@@ -520,9 +520,9 @@ int parser::destination(stringstream& ss, int* idxreg){
 	//chain back
 	string dec = st->get_declared_in(potentialarraytok);
 	string currftoken = st->get_ftoken().get_value();
-	cout << "found " << potentialarraytok.get_value() << " in " << dec << endl;
+	//cout << "found " << potentialarraytok.get_value() << " in " << dec << endl;
 	if(dec == currftoken){
-	  cout << "in " << currftoken << " " << potentialarraytok.get_value() << " is easy" << endl;
+	  //cout << "in " << currftoken << " " << potentialarraytok.get_value() << " is easy" << endl;
 	  //in current scope, easy codegen:
 	  ss << "MM[R[0] + " << st->get_offset(potentialarraytok) << "]";
 	}else{
@@ -743,7 +743,7 @@ int parser::identifier(int typemark){
   int tt = st->get_tokentype(*next_token);
   if( tt < 0){
     report_error("Undeclared function or variable: " + next_token->get_value(), l->get_linenumber());
-    cout << *st << endl;
+    //cout << *st << endl;
     
     panic();
     error_flag = true;

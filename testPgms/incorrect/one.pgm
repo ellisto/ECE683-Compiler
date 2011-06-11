@@ -10,12 +10,12 @@ integer tmp;
 
 boolean function foo(integer a) 
 begin
-foo := 0;
+foo := a < 0;
 end function;
 
 boolean function foo(integer a)   // illegal function redefinition (in same scope)....
 begin
-foo := 'a';
+foo := a > 0;
 end function;
   
 

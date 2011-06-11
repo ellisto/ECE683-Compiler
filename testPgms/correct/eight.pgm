@@ -6,15 +6,15 @@ integer function test()
 integer x;
 integer y;
 integer z;
-integer tmp;
+integer temp;
 
 begin
 
-  x := -5;
+  x := 0 - 5;
   y := 5;
   z := 3;
 
-  while x < 0
+  while x < 5
     case x is
       when 0 then temp := putInt(y-x/2);
       when 1 then temp := putInt(y-x*2);

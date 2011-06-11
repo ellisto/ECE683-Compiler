@@ -10,7 +10,7 @@ integer tmp;
 
 begin
 
- z = x < y;
+ z := x < y;
  x := y + z; // type mismatch
 
 end function

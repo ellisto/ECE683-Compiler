@@ -1,5 +1,5 @@
 
-boolean function() test 
+boolean function test ()
 string a;				
 integer b;
 integer function testone(string testwe) 
@@ -28,5 +28,5 @@ begin
 	b := testone("TestMe");
 	b := testtwo(a);
         b := putInt(b);
-        test := 0;
+        test := 0 == 0;
 end function

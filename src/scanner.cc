@@ -366,6 +366,12 @@ token scanner::scan(){
     value[i]='\0';
   }
   
+  if(type != STRING){
+    for(int j=0; j < i; j++){
+      value[j] = tolower(value[j]);
+    }
+  }
+  
   token t(type,value);
 
   /*if(type == ID){
@@ -389,3 +395,8 @@ bool scanner::good(){
 void scanner::set_st(symboltable* st){
   this->st =st;
 }
+// string uppercase(string str){
+//   for(int i=0; i< str.length(); i++){
+//     str.replace(i,1,string(toupper(str[i])));
+//   }
+// }

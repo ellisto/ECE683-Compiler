@@ -150,6 +150,7 @@ boolean function main(integer par)
 	tmp := putBool(123 == get123nest());
 	tmp := putBool(inc3nest(10) == 13);
         array[6] := 88;
+	//tmp := putInt(getValue(array, 6));
         tmp := putBool(getValue(array, 6) == 88);
         array[0] := 56;
         tmp := overwrite(array);

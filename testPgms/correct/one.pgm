@@ -5,10 +5,11 @@ string function testfunction ()
   integer result;
   integer function dowork(integer amount, string label) 
     integer i;
+    string someArray[10];
   begin
       i := 100;
       result := putString(label);
-      while i := 100
+      while i > 0
         if amount > 1 then
           amount := amount / 2;
           result := putString("Dividing amount by two for task");
@@ -24,5 +25,5 @@ string function testfunction ()
 begin
     label := "A test job";
     result := dowork(10, label);
-    testfunction := 0;
+    testfunction := "You done good";
 end function

@@ -39,5 +39,5 @@ begin
 	end while;
 	c := c * (d + b);
 	d := 5  * a[8 + bool2int(c < b)];
-        test1 := 0 == 0;
+        test1 := 0;
 end function

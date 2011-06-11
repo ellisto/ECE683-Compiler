@@ -15,5 +15,5 @@ end function;
 
 begin
   tmp := putInt(factorial(19));
-  test := 0 > 0 ;
+  test := 0;
 end function
