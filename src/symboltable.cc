@@ -5,7 +5,12 @@
 symboltable::symboltable(){
   table = unordered_set<symboltableentry>();
   prev = NULL;
-
+  
+  ftoken = new token(-1,"");
+  // token globaltoken(-1,"_GLOBAL");
+  // st->add(globaltoken);
+  // st->set_function(globaltoken,vector<pair<token*,int> >());
+  // st->set_ftoken(globaltoken);
   //void scanner::initST(){
   
   add(token(FUNCTION,string("function")));
@@ -112,6 +117,10 @@ symboltableentry *symboltable::find_entry(token t){
       ret = prev->find_entry(t);
   }else{
     ret = new symboltableentry(*it);
+    if(ftoken->get_type()>=0){
+      //cout << t.get_value() << " declared in " << ftoken->get_value() <<endl;
+      ret->set_declared_in(ftoken->get_value());
+    }
   }
   return ret;
 }

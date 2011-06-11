@@ -162,6 +162,9 @@ token parser::function_header(int typemark){
   scan_next_token();
   token ftoken = *next_token;
   //  cout << "candidate function: " << ftoken << endl;
+   ftoken = *st->add(ftoken); // add to current scope if not already there
+   if(typemark >=0)
+       st->set_tokentype(ftoken,typemark);
   identifier(typemark);
   vector<pair<token*,int> > plist = vector<pair<token*,int> >();
   map<int, pair<int,int> > arrayparams = map<int, pair<int,int> >();
@@ -173,7 +176,7 @@ token parser::function_header(int typemark){
   }
   remove_scope();
   check_token_type(RPAREN,"')'");
-  ftoken = *st->add(ftoken); // add to current scope if not already there
+  //ftoken = *st->add(ftoken); // add to current scope if not already there
   //cout << "about to set function for ftoken " << ftoken << endl;
   st->set_function(ftoken,plist,arrayparams); // add function and parameterlist to symboltable
   st->set_offset(ftoken,0);
@@ -249,7 +252,7 @@ void parser::function_body(token ftoken){
     token argtok = *(plist[i].first);
     //add arg to symbol table
     argtok = *st->add(argtok);
-    st->set_declared_in(argtok,st->get_ftoken().get_value());
+    //st->set_declared_in(argtok,st->get_ftoken().get_value());
     st->set_tokentype(argtok,tt);
     st->set_offset(argtok,st->get_ardepth(st->get_ftoken()));
     if(tt == ARRAYTYPE){
@@ -337,9 +340,13 @@ void parser::variable_declaration(int tm){
   if(error_flag){return;}
   debug("enter variable_declaration");
   token varid = *next_token;
-  identifier(tm);
   varid = *st->add(varid); // add to current scope if not already there
-  st->set_declared_in(varid,st->get_ftoken().get_value());
+  if(tm >=0)
+    st->set_tokentype(varid,tm);
+  identifier(tm);
+
+
+  //st->set_declared_in(varid,st->get_ftoken().get_value());
 
   if(next_token->get_type() == LBRACKET){
     check_token_type(LBRACKET,"'['");
@@ -430,7 +437,7 @@ void parser::assignment_statement(){
   if(desttok.get_value() == st->get_ftoken().get_value()){
     returned = true;
   }
-  ss << "// ASSIGNMENT STATEMENT, Y'ALL " << endl;
+  
   int tt1 = destination(ss,idxreg);
   check_token_type(ASSIGN,":=");
 
@@ -441,11 +448,9 @@ void parser::assignment_statement(){
   int* expressionreg;
   expressionreg = new int(c->get_next_free_reg());
   c->use_reg(*expressionreg);
-  c->write_code("//here's where they call expression\n");
   int tt2 = expression(expressionreg);
-  c->write_code("//did it print?\n");
   check_types(tt1,tt2);
-
+  
   if(tt2 == ARRAYTYPE){ 
     //it's an array, not indexed.  need to check that they are same
     //size and then copy elements
@@ -466,7 +471,6 @@ void parser::assignment_statement(){
   }else{
     ss << " = R[" << *expressionreg << "]; //assignment_statement "<< desttok.get_value() << endl;
   }
-  ss << "// ASSIGNMENT STATEMENT'S DONE, Y'ALL " << endl;
   c->write_code(ss.str());
   c->free_reg(*expressionreg);
   c->free_reg(*idxreg);
@@ -478,6 +482,8 @@ int parser::destination(stringstream& ss, int* idxreg){
   debug("enter destination");
   token potentialarraytok = *next_token;
   int tt = identifier();
+  
+  
   if(next_token->get_type() == LBRACKET){ //array
     if(!st->is_array(potentialarraytok)){
       report_error("Indexing a non-array: " + potentialarraytok.get_value() + " is not an array.",l->get_linenumber());
@@ -496,13 +502,59 @@ int parser::destination(stringstream& ss, int* idxreg){
     check_token_type(RBRACKET,"]");
     scan_next_token();
   }else{
-    //if destination is an array variable, not an indexed entry of the
-    //array, return ARRAYTYPE so above knows to not write code, just
-    //change offset.
+    //no indexing
     if(st->is_array(potentialarraytok)){
       tt = ARRAYTYPE;
+      //if destination is an array variable, not an indexed entry of the
+      //array, return ARRAYTYPE 
+    }else if(st->is_function(potentialarraytok)){
+      //returning a function, so no offset.
+      cout << "returning a function: " << potentialarraytok.get_value() << endl;
+      ss << "MM[R[0]]";
     }else{
-      ss << "MM[R[0] + " << st->get_offset(potentialarraytok) << "]";
+      // not an array at all.
+      //      ss << "MM[R[0] + " << st->get_offset(potentialarraytok) << "]";
+      
+      
+      //check to see if tok is in current scope, or if we have to
+	//chain back
+	string dec = st->get_declared_in(potentialarraytok);
+	string currftoken = st->get_ftoken().get_value();
+	cout << "found " << potentialarraytok.get_value() << " in " << dec << endl;
+	if(dec == currftoken){
+	  cout << "in " << currftoken << " " << potentialarraytok.get_value() << " is easy" << endl;
+	  //in current scope, easy codegen:
+	  ss << "MM[R[0] + " << st->get_offset(potentialarraytok) << "]";
+	}else{
+	  //gotta chain back.
+	  int* rdec = new int(c->get_next_free_reg());
+	  c->use_reg(*rdec);
+	  int* tst = new int(c->get_next_free_reg());
+	  c->use_reg(*tst);
+
+	  string lblloop = c->get_next_label();
+	  string lbldone = c->get_next_label();
+	  
+	  string declbl = st->get_label(token(ID,dec));
+	  stringstream ss2;
+	  ss2 << "R[" << *idxreg << "] = R[0];" << endl
+	      << "R[" << *rdec << "] = &&" << declbl << "; //store id we're looking for" << endl
+	      << lblloop << ": R[" << *tst << "] = MM[R[" << *idxreg << "]];" << endl
+	      << "R[" << *tst << "] = (R[" << *tst << "] == R[" << *rdec 
+	      << "]); //see if we're there yet" <<endl
+	      << "if(R[" << *tst << "]) goto " << lbldone << "; // if so, then done" << endl
+	      << "R[" << *idxreg <<"] = MM[R[" << *idxreg << "]-1]; // go back to next FP" << endl
+	      << "goto " << lblloop << ";" << endl
+	      << lbldone << ": ";
+	  c->write_code(ss2.str());
+	  ss << "MM[R[" << *idxreg << "] + " 
+	    << st->get_offset(potentialarraytok) << "]";
+	  c->free_reg(*rdec);
+	  c->free_reg(*tst);
+	}
+
+
+
     }
   }
   debug("exit destination; tt is " , tt);
@@ -680,14 +732,18 @@ int parser::identifier(int typemark){
   debug("enter identifier");
   check_token_type(ID,"identifier");
   //cout << *next_token << endl;
-  if(typemark >=0){
-    st->set_tokentype(*next_token,typemark);
-  }
+  // token varid = *next_token;
+  // varid = *st->add(varid); // add to current scope if not already there
+  // if(typemark >=0)
+  //   st->set_tokentype(varid,typemark);
+  // if(typemark >=0){
+  //    st->set_tokentype(*next_token,typemark);
+  //  }
   //cout << *st << endl;
   int tt = st->get_tokentype(*next_token);
   if( tt < 0){
     report_error("Undeclared function or variable: " + next_token->get_value(), l->get_linenumber());
-    //cout << *st << endl;
+    cout << *st << endl;
     
     panic();
     error_flag = true;
@@ -1023,7 +1079,10 @@ int parser::factor(int * regnum){
 	//check to see if tok is in current scope, or if we have to
 	//chain back
 	string dec = st->get_declared_in(ftoken);
-	if(dec == st->get_ftoken().get_value()){
+	string currftoken = st->get_ftoken().get_value();
+	//cout << "found " << ftoken.get_value() << " in " << dec << endl;
+	if(dec == currftoken){
+	  //cout << "in " << currftoken << " " << ftoken.get_value() << " is easy" << endl;
 	  //in current scope, easy codegen:
 	  ss << "R[" << *regnum << "] = MM[R[0] + " << st->get_offset(ftoken)
 	     << "];//factor " << ftoken.get_value() << endl;
@@ -1197,7 +1256,7 @@ void parser::argument_list(token t, int argnum, int offset,stringstream& ss){
 	//cout << plist[argnum].first->get_value() << " is an array" << endl;
       }
       token argtok = *st->add(*(plist[argnum].first)); 
-      st->set_declared_in(argtok,st->get_ftoken().get_value());
+      //st->set_declared_in(argtok,st->get_ftoken().get_value());
       if(isarray){
 	int* tmpreg = new int(c->get_next_free_reg());
 	c->use_reg(*tmpreg);

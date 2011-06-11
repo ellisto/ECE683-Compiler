@@ -2,6 +2,7 @@ integer function myfunction()
 integer a;
   integer function f()
     begin
+      a := 100;
       f := a;
     end function;
 begin

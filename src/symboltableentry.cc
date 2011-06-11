@@ -128,10 +128,12 @@ bool operator==(const symboltableentry& t1, const symboltableentry& t2){
 ostream& operator<<(ostream& o, const symboltableentry& s){
   o << *(s.t)
     << ", type: " << *(s.type)
+    << ", declared in: " << *(s.declared_in)
     << ", array? " << *(s.arraybool)
     << ", arraysize: " << *(s.arraysize)
     << ", function? " << *(s.functionbool)
     << ", paramlist: " << s.paramlist;
+  
   
   return o;
 }
